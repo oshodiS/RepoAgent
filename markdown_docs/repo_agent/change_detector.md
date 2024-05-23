@@ -1,3 +1,11 @@
+## FunctionDef observe_updating
+**observe_updating**: The function of observe_updating is to print "AGAIN" and "The documentation added it".
+
+**parameters**: This Function does not take any parameters.
+
+**Code Description**: The observe_updating function simply prints the string "AGAIN" and "The documentation added it" to the console when called. It does not require any input parameters and serves as a simple demonstration of printing messages.
+
+**Note**: This function is a basic example of a function that performs a specific action (printing messages) without any input parameters. It can be used for testing or demonstration purposes where printing messages to the console is required.
 ## ClassDef ChangeDetector
 **ChangeDetector**: The ChangeDetector class is responsible for handling file differences and change detection. It utilizes the FileHandler class to access the file system. The core functionality of the ChangeDetector class is to identify the changes in files since the last commit.
 

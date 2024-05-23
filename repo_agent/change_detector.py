@@ -9,7 +9,7 @@ from repo_agent.file_handler import FileHandler
 from repo_agent.settings import setting
 
 def observe_updating():
-    print("The function observe_updating is called.")
+    print("AGAIN")
     print("The documentation added it ")
 
 class ChangeDetector:
