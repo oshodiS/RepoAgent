@@ -573,8 +573,6 @@ class Runner:
         del_obj = list(previous_obj - current_obj)
         return new_obj, del_obj
     
-    def prova_diff(self):
-        print("Prova diff")
 
 
 if __name__ == "__main__":
