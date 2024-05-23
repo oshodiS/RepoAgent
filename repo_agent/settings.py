@@ -98,7 +98,6 @@ max_input_tokens_map = {
     "gpt-3.5-turbo-0125": 16384,
     "gpt-4": 8192,
     "gpt-4-0613": 8192,
-    "gpt-4-32k": 32768,  # NOTE This model was never rolled out widely in favor of GPT-4 Turbo.
     "gpt-4-1106": 131072,
     "gpt-4-0125-preview": 131072,
     "gpt-4-turbo-preview": 131072,
