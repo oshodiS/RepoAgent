@@ -224,45 +224,27 @@ In the project, this function is called within the `from_project_hierarchy_json`
 - The `parse_tree_path` function is essential for establishing the tree path for each node in the hierarchical structure, enabling efficient tree traversal and path identification within the project's metadata.
 ***
 ### FunctionDef get_file_name(self)
-**get_file_name**: The function of get_file_name is to retrieve the file name of an object by extracting the name before the ".py" extension.
+**get_file_name**: The function of get_file_name is to retrieve the file name from the full name of the object.
 
-**parameters**:
-- `self`: The current object instance.
+**Parameters**:
+- self: The current instance of the object.
 
 **Code Description**:
-The `get_file_name` function first calls the `get_full_name` function to obtain the full name of the object. It then splits the full name using ".py" as the delimiter and returns the part before ".py" concatenated with ".py". This effectively extracts the file name of the object.
+The get_file_name function is defined within the DocItem class in the doc_meta_info.py file. It does not take any additional parameters. The purpose of this function is to extract the file name from the full name of the object.
 
-This function is useful for obtaining the file name of an object within the hierarchy without the extension.
+The function starts by calling the get_full_name function to retrieve the full name of the object. It then splits the full name using the ".py" substring as the delimiter. The resulting list contains two elements: the file name without the ".py" extension and an empty string. The function retrieves the first element of the list and appends the ".py" extension to it.
 
-**Note**: No additional parameters are required for this function.
+Finally, the function returns the file name.
+
+**Note**:
+- The get_file_name function assumes that the full name of the object is a valid string representation of the file name.
+- The function relies on the get_full_name method of the DocItem class to retrieve the full name of the object.
 
 **Output Example**:
-If the full name of the object is "repo_agent/doc_meta_info.py/DocItem", the function will return "repo_agent/doc_meta_info.py/DocItem.py".
+If the full name of the object is "repo_agent/doc_meta_info.py/DocItem/get_file_name", the function will return "doc_meta_info.py".
 ***
 ### FunctionDef get_full_name(self, strict)
-**get_full_name**: The function of get_full_name is to retrieve the full name of an object by traversing from bottom to top in the object hierarchy.
-
-**parameters**:
-- `self`: The current object instance.
-- `strict` (optional): A boolean flag indicating whether to handle name duplicates strictly. Default is `False`.
-
-**Code Description**:
-The `get_full_name` function is used to obtain the full name of an object by traversing from the current object to its parent objects. It returns a string representing the full name of the object, with each level separated by a forward slash ("/").
-
-The function first checks if the current object has a parent. If it does not, it means that the current object is the top-level object, and its own name is returned as the full name.
-
-If the `strict` flag is set to `True`, the function handles name duplicates by appending a suffix "(name_duplicate_version)" to the name of the object if there are other objects with the same name in its parent's children. This ensures that each object has a unique name in the hierarchy.
-
-The function then iterates through each parent object, starting from the current object and moving up the hierarchy. For each parent object, it retrieves the name of the current object. If the `strict` flag is set and there are name duplicates in the parent's children, the function replaces the current object's name with the corresponding name from the parent's children.
-
-The names of the objects are stored in a list in reverse order, with the current object's name at the beginning of the list. Finally, the list is joined with forward slashes to form the full name of the object.
-
-**Note**: 
-- The `strict` flag is optional and defaults to `False`. It is used to handle name duplicates in the object hierarchy.
-- The function assumes that the object hierarchy is correctly defined and that each object has a unique name within its parent's children.
-
-**Output Example**: 
-If the current object is named "obj3" and its parent is named "obj2", and there are no name duplicates in the hierarchy, the function will return "obj2/obj3".
+An unknown error occurred while generating this documentation after many tries.
 ***
 ### FunctionDef find(self, recursive_file_path)
 **find**: The function of find is to search for a specific file in the repository hierarchy based on a given list of file paths.
