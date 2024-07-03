@@ -3,43 +3,42 @@ import logging
 import sys
 
 from loguru import logger
+from repo_agent.log import logger
 
 logger = logger.opt(colors=True)
 """
-RepoAgent 日志记录器对象。
+RepoAgent logger object.
 
-默认信息:
-- 格式: `[%(asctime)s %(name)s] %(levelname)s: %(message)s`
-- 等级: `INFO` ，根据 `CONFIG["log_level"]` 配置改变
-- 输出: 输出至 stdout
+Default settings:
+- Format: `[%(asctime)s %(name)s] %(levelname)s: %(message)s`
+- Level: `INFO`, can be changed based on the `CONFIG["log_level"]` configuration
+- Output: stdout
 
-用法示例:
+Usage example:
     ```python
-    from repo_agent.log import logger
     
-    # 基本消息记录
-    logger.info("It <green>works</>!") # 使用颜色
+    # Basic message logging
+    logger.info("It <green>works</>!") # Using colors
 
-    # 记录异常信息
+    # Logging exception information
     try:
         1 / 0
     except ZeroDivisionError:
-        # 使用 `logger.exception` 可以在记录异常消息时自动附加异常的堆栈跟踪信息。
+        # Using `logger.exception` automatically appends the exception's stack trace information when logging exception messages.
         logger.exception("ZeroDivisionError occurred")
 
-    # 记录调试信息
+    # Logging debug information
     logger.debug("Debugging info: {}", some_debug_variable)
 
-    # 记录警告信息
+    # Logging warning messages
     logger.warning("This is a warning message")
 
-    # 记录错误信息
+    # Logging error messages
     logger.error("An error occurred")
 
-    # 使用原生 print 函数（被重定向至 logger）
+    # Using the native print function (redirected to logger)
     print("This will be logged as an INFO level message")
     ```
-
 """
 
 

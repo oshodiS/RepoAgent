@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="https://github.com/OpenBMB/RepoAgent/assets/138990495/06bc2449-c82d-4b9e-8c83-27640e541451" width="20" alt="RepoAgent logo"/> <em>RepoAgent: An LLM-Powered Framework for Repository-level Code Documentation Generation.</em>
+  <img src="https://github.com/OpenBMB/RepoAgent/assets/138990495/06bc2449-c82d-4b9e-8c83-27640e541451" width="50" alt="RepoAgent logo"/> <em>RepoAgent: An LLM-Powered Framework for Repository-level Code Documentation Generation.</em>
 </h1>
 
 <p align="center">
@@ -28,6 +28,9 @@
   <a href="https://github.com/LOGIC-10/RepoAgent/blob/main/README_CN.md">简体中文 readme</a>
 </p>
 
+## :tv: Demo
+
+[![Watch the video](https://img.youtube.com/vi/YPPJBVOP71M/hqdefault.jpg)](https://youtu.be/YPPJBVOP71M)
 
 ## 👾 Background
 
@@ -39,12 +42,13 @@ Traditionally, creating and maintaining software documentation demanded signific
 
 ## ✨ Features
 
-- **Automatically detects changes in Git repositories, tracking additions, deletions, and modifications of files.**
-- **Independently analyzes the code structure through AST, generating documents for individual objects.**
-- **Accurate identification of inter-object bidirectional invocation relationships, enriching the global perspective of document content.**
-- **Seamlessly replaces Markdown content based on changes, maintaining consistency in documentation.**
-- **Executes multi-threaded concurrent operations, enhancing the efficiency of document generation.**
-- **Offer a sustainable, automated documentation update method for team collaboration.**
+- **🤖 Automatically detects changes in Git repositories, tracking additions, deletions, and modifications of files.**
+- **📝 Independently analyzes the code structure through AST, generating documents for individual objects.**
+- **🔍 Accurate identification of inter-object bidirectional invocation relationships, enriching the global perspective of document content.**
+- **📚 Seamlessly replaces Markdown content based on changes, maintaining consistency in documentation.**
+- **🕙 Executes multi-threaded concurrent operations, enhancing the efficiency of document generation.**
+- **👭 Offer a sustainable, automated documentation update method for team collaboration.**
+- **😍 Display Code Documentation in an amazing way. (with document book per project powered by Gitbook)**
 
 
 ## 🚀 Getting Started
@@ -195,18 +199,51 @@ Next, you can make some modifications to the target repository, such as adding a
 You just need to follow the normal git workflow: git add, git commit -m "your commit message", git push
 The RepoAgent hook will automatically trigger at git commit, detect the files you added in the previous step, and generate corresponding documents.
 
-After execution, RepoAgent will automatically modify the staged files in the target repository and formally submit the commit. 
-The generated document will be stored in the specified folder in the root directory of the target warehouse. 
+After execution, RepoAgent will automatically modify the staged files in the target repository and formally submit the commit. After the execution is completed, the green "Passed" will be displayed, as shown in the figure below:
+![Execution Result](https://raw.githubusercontent.com/OpenBMB/RepoAgent/main/assets/images/ExecutionResult.png)
+
+The generated document will be stored in the specified folder in the root directory of the target warehouse. The rendering of the generated document is as shown below:
+![Documentation](https://raw.githubusercontent.com/OpenBMB/RepoAgent/main/assets/images/Doc_example.png)
+![Documentation](https://raw.githubusercontent.com/OpenBMB/RepoAgent/main/assets/images/8_documents.png)
+
 We utilized the default model **gpt-3.5-turbo** to generate documentation for the [**XAgent**](https://github.com/OpenBMB/XAgent) project, which comprises approximately **270,000 lines** of code. You can view the results of this generation in the Markdown_Docs directory of the XAgent project on GitHub. For enhanced documentation quality, we suggest considering more advanced models like **gpt-4-1106** or **gpt-4-0125-preview**.
 
 **In the end, you can flexibly adjust the output format, template, and other aspects of the document by customizing the prompt. We are excited about your exploration of a more scientific approach to Automated Technical Writing and your contributions to the community.** 
 
 ### Exploring chat with repo
 
-The "Chat with Repo" feature enables users to consult the generated documentation directly through a chat with an LLM. This functionality supports handling both specific inquiries and more general questions efficiently.
+We conceptualize **Chat With Repo** as a unified gateway for these downstream applications, acting as a connector that links RepoAgent to human users and other AI agents. Our future research will focus on adapting the interface to various downstream applications and customizing it to meet their unique characteristics and implementation requirements.
+
+Here we demonstrate a preliminary prototype of one of our downstream tasks: Automatic Q&A for Issues and Code Explanation. You can start the server by running the following code.
 
 ```sh
 repoagent chat-with-repo
 ```
 
+## ✅ Future Work
 
+- [ ] Generate README.md automatically combining with the global documentation
+- [ ] **Multi-programming-language support** Support more programming languages like Java, C or C++, etc.
+- [ ] Local model support like Llama, chatGLM, Qwen, GLM4, etc.
+
+## 🥰 Featured Cases
+
+Here are featured cases that have adopted RepoAgent.
+
+- [MiniCPM](https://github.com/OpenBMB/MiniCPM): An edge-side LLM of 2B size, comparable to 7B model.
+- [ChatDev](https://github.com/OpenBMB/ChatDev): Collaborative AI agents for software development.
+- [XAgent](https://github.com/OpenBMB/XAgent): An Autonomous LLM Agent for Complex Task Solving.
+- [EasyRL4Rec](https://github.com/chongminggao/EasyRL4Rec): A user-friendly RL library for recommender systems.
+
+## 📊 Citation
+
+```bibtex
+@misc{luo2024repoagent,
+      title={RepoAgent: An LLM-Powered Open-Source Framework for Repository-level Code Documentation Generation}, 
+      author={Qinyu Luo and Yining Ye and Shihao Liang and Zhong Zhang and Yujia Qin and Yaxi Lu and Yesai Wu and Xin Cong and Yankai Lin and Yingli Zhang and Xiaoyin Che and Zhiyuan Liu and Maosong Sun},
+      year={2024},
+      eprint={2402.16667},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+```

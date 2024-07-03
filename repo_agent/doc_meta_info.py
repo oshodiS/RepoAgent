@@ -1,4 +1,4 @@
-"""存储doc对应的信息，同时处理引用的关系
+"""Store information corresponding to the documentation and handle reference relationships.
 """
 from __future__ import annotations
 

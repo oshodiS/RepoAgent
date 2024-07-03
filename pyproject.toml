@@ -6,7 +6,7 @@ maintainers = [
     {name = "Edwards Arno", email = "Edwards.Arno@outlook.com"},
 ]
 license = {text = "Apache-2.0"}
-requires-python = ">=3.10,<4.0"
+requires-python = ">=3.10,<3.13.0"
 dependencies = [
     "loguru>=0.7.2",
     "openai>=1.10.0",
@@ -23,6 +23,13 @@ dependencies = [
     "tomli-w>=1.0.0",
     "llama-index<0.10.0",
     "colorama>=0.4.6",
+    "langchain>= 0.2.5",
+    "langchain-openai",
+    "langchain-community",
+    "unstructured",
+    "langchain_chroma",
+    "lark",
+
 ]
 name = "repoagent"
 version = "0.1.3"

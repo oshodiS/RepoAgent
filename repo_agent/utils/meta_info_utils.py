@@ -11,11 +11,11 @@ latest_verison_substring = "_latest_version.py"
 
 
 def make_fake_files():
-    """根据git status检测暂存区信息。如果有文件：
-    1. 新增文件，没有add。无视
-    2. 修改文件内容，没有add，原始文件重命名为fake_file，新建原本的文件名内容为git status中的文件内容
-    3. 删除文件，没有add，原始文件重命名为fake_file，新建原本的文件名内容为git status中的文件内容
-    注意: 目标仓库的文件不能以latest_verison_substring结尾
+    """Detect staging area information based on git status. If there are files:
+    1. New files without being added are ignored.
+    2. Modified files without being added are renamed as fake files, and the content of the original file is replaced with the content of the file in git status.
+    3. Deleted files without being added are renamed as fake files, and a new file with the original file name is created with the content from git status.
+    Note: The files in the target repository should not end with latest_verison_substring.
     """
     delete_fake_files()
     
@@ -72,10 +72,11 @@ def delete_fake_files():
                 origin_name = fi_d.replace(latest_verison_substring, ".py")
                 os.remove(origin_name)
                 if os.path.getsize(fi_d) == 0:
-                    print(f"{Fore.LIGHTRED_EX}[Deleting Temp File]: {Style.RESET_ALL}{fi_d[len(setting.project.target_repo):]}, {origin_name[len(setting.project.target_repo):]}")
+                    print(setting.project.target_repo)
+                    print(f"{Fore.LIGHTRED_EX}[Deleting Temp File]: {Style.RESET_ALL}{fi_d[len(str(setting.project.target_repo)):]}, {origin_name[len(str(setting.project.target_repo)):]}")
                     os.remove(fi_d)
                 else:
-                    print(f"{Fore.LIGHTRED_EX}[Recovering Latest Version]: {Style.RESET_ALL}{origin_name[len(setting.project.target_repo):]} <- {fi_d[len(setting.project.target_repo):]}")
+                    print(f"{Fore.LIGHTRED_EX}[Recovering Latest Version]: {Style.RESET_ALL}{origin_name[len(str(setting.project.target_repo)):]} <- {fi_d[len(str(setting.project.target_repo)):]}")
                     os.rename(fi_d, origin_name)
 
     gci(setting.project.target_repo)
