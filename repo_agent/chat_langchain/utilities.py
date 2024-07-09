@@ -1,6 +1,7 @@
 
 import os, json,re
 from langchain_text_splitters import MarkdownHeaderTextSplitter, RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import DirectoryLoader, UnstructuredMarkdownLoader
 
 def split_documents(doc, chunk_size=250, chunk_overlap=30):
         """ Split a document into chunks of text."""
@@ -67,7 +68,6 @@ def get_dont_contextualize_system_prompt():
 
 def get_readme_path(root_path):
     """Reads the README.md file in the root of the repository."""
-    readme_files = []
     pattern = re.compile(r'^(read[_]?me)([_]?(md|txt))$', re.IGNORECASE)
     for root, dirs, files in os.walk(root_path):
         for file in files:
@@ -75,3 +75,12 @@ def get_readme_path(root_path):
                 return os.path.join(root, file)
     return None
 
+def load_docs(path_marksdown):
+        all_docs = []
+        abs = os.path.normpath(os.path.abspath(path_marksdown))  # Normalize and convert root_path to an absolute path
+
+        for subdir, _, _ in os.walk(abs):
+            loader = DirectoryLoader(os.path.join(abs, subdir), glob="./*.md", show_progress=True, loader_cls=UnstructuredMarkdownLoader)    
+            docs = loader.load()
+            all_docs.extend(docs)
+        return all_docs

@@ -10,7 +10,7 @@ from chat_langchain.utilities import split_documents
 import concurrent.futures
 
 
-class Summarizator:
+class ParallelSummarizator:
     def __init__(self, path, model_name):
         self.path = path
         self.llm = ChatOpenAI(temperature=0.1, model_name=model_name)

@@ -1,141 +1,123 @@
 ## ClassDef RepoAssistant
-**RepoAssistant**: The function of RepoAssistant is to serve as a helpful assistant in repository Q&A. It provides various methods for generating search queries, ranking document relevance, and generating responses based on user input and repository information.
+**RepoAssistant**: The function of RepoAssistant is to assist in repository question and answer tasks by utilizing various AI models and tools for generating search queries, reranking documents, and providing relevant information based on user queries.
 
 **attributes**:
-- api_key: The API key used for authentication.
-- api_base: The base URL for API requests.
-- db_path: The path to the database file.
-- md_contents: A list to store Markdown contents.
-- llm: An instance of the OpenAI class for language model operations.
-- client: An instance of the OpenAI class for chat completions.
-- lm: An instance of the AI class for AI operations.
-- textanslys: An instance of the TextAnalysisTool class for text analysis.
-- json_data: An instance of the JsonFileProcessor class for JSON data processing.
-- chroma_data: An instance of the ChromaManager class for managing code snippets.
+- api_key: The API key used for accessing OpenAI and other services.
+- api_base: The base URL for API endpoints.
+- db_path: The path to the database storing JSON data.
+- md_contents: A list to store markdown contents.
+- llm: An instance of OpenAI model "gpt-3.5-turbo-1106" for language processing.
+- client: An instance of OpenAI model "gpt-4-1106-preview" for chat completions.
+- lm: An instance of AI model for various AI tasks.
+- textanslys: An instance of TextAnalysisTool for text analysis.
+- json_data: An instance of JsonFileProcessor for processing JSON data.
+- chroma_data: An instance of ChromaManager for managing chroma data.
 
-**Code Description**: The RepoAssistant class is responsible for providing assistance in repository Q&A. It initializes the necessary configurations and objects, such as the API key, API base URL, and database path. It also loads JSON data, sets up the OpenAI language model, and initializes instances of other classes for text analysis, JSON data processing, and code snippet management.
+**Code Description**: 
+The RepoAssistant class initializes with API key, base URL, and database path. It utilizes different AI models and tools for various tasks:
+- The `generate_queries` method generates multiple search queries based on a single input query.
+- The `rerank` method ranks the relevance of documents based on a query.
+- The `rag` method provides answers to user questions based on retrieved documents.
+- The `list_to_markdown` method converts a list to markdown format.
+- The `rag_ar` method generates answers based on related code and documents in a repository.
+- The `respond` method processes user messages, generates search queries, retrieves documents, and provides responses.
 
-The RepoAssistant class provides several methods:
-- generate_queries(query_str, num_queries): This method generates multiple search queries based on a single input query. It takes a query string and an optional parameter for the number of queries to generate. It uses the OpenAI language model to generate the queries and returns a list of generated queries.
+The `respond` method integrates multiple functionalities to handle user queries, retrieve relevant information, and generate responses using AI models and tools. It interacts with OpenAI models, text analysis tools, and database processors to provide accurate and detailed answers to user questions.
 
-- rerank(query, docs): This method performs relevance ranking of documents based on a query. It takes a query string and a list of documents as input. It uses the AI class to determine the relevance score for each document and returns the top 5 most relevant document contents.
+**Note**: 
+- Ensure to provide valid API key, base URL, and database path during initialization.
+- The class utilizes various AI models and tools for different tasks, so proper configuration and setup are essential for accurate results.
 
-- rag(query, retrieved_documents): This method generates a response to a user's question based on the retrieved documents. It takes a query string and a list of retrieved documents as input. It uses the OpenAI language model to generate the response and returns the generated content.
-
-- list_to_markdown(list_items): This method converts a list of items into a Markdown-formatted string. It takes a list of items as input and returns a string with each item formatted as a numbered list.
-
-- rag_ar(query, related_code, embedding_recall, project_name): This method generates a response to a user's question based on related code and documents. It takes a query string, related code snippets, embedding recall results, and the project name as input. It uses the OpenAI language model to generate the response and returns the generated content.
-
-- respond(message, instruction): This method generates a response to a user's message based on the provided instruction. It takes a message string and an instruction string as input. It uses various methods and classes to analyze the message, generate search queries, retrieve relevant documents, and generate a final response. It returns the original message, the generated response, a Markdown-formatted string of retrieved documents, a list of extracted questions from the message, a Markdown-formatted string of unique code snippets, and a Markdown-formatted string of unique Markdown contents.
-
-**Note**: Developers should ensure that the necessary configurations, such as the API key, API base URL, and database path, are properly set up before using the RepoAssistant class. The class provides methods for generating search queries, ranking document relevance, and generating responses based on user input and repository information. It is important to handle user input and provide accurate and relevant responses based on the given information.
-
-**Output Example**:
-- Original message: "How do I install a Python package?"
-- Generated response: "To install a Python package, you can use the 'pip' command. Open your command prompt or terminal and type 'pip install package_name', replacing 'package_name' with the name of the package you want to install."
-- Retrieved documents:
-  1. "Installing Python Packages - Python Packaging User Guide"
-  2. "How to Install Python Packages Using Pip"
-  3. "Python Package Installation - GeeksforGeeks"
-- Extracted questions: ["How do I install a Python package?"]
-- Unique code snippets:
-  ```
-  import requests
-  response = requests.get(url)
-  print(response.text)
-  ```
-- Unique Markdown contents:
-  - "Installing Python Packages - Python Packaging User Guide"
-  - "How to Install Python Packages Using Pip"
-  - "Python Package Installation - GeeksforGeeks"
+**Output Example**: 
+A possible output of the `respond` method could be a tuple containing the user message, bot response, retrieved document summaries, keywords, related code snippets, and markdown-formatted content.
 ### FunctionDef __init__(self, api_key, api_base, db_path)
-**__init__**: The function of __init__ is to initialize the RepoAssistant object with the provided API key, API base, and database path.
+**__init__**: The function of __init__ is to initialize the RepoAssistant object with the provided API key, API base URL, and database path.
 
 **parameters**:
-- api_key: The API key used for authentication.
-- api_base: The base URL for API requests.
-- db_path: The path to the database.
+- api_key: A string representing the API key used for authentication.
+- api_base: A string representing the base URL for API requests.
+- db_path: A string representing the path to the database.
 
 **Code Description**:
-The `__init__` function of the `RepoAssistant` class initializes the object with the provided API key, API base, and database path. It also initializes various attributes such as `md_contents`, `llm`, `client`, `lm`, `textanslys`, `json_data`, and `chroma_data`.
+The `__init__` function of the `RepoAssistant` class initializes the object by setting the API key, API base URL, and database path. It also initializes various components such as OpenAI models, database handlers, and other tools required for the functioning of the `RepoAssistant`.
 
-- The `api_key` parameter represents the API key used for authentication.
-- The `api_base` parameter represents the base URL for API requests.
-- The `db_path` parameter represents the path to the database.
+The `api_key` parameter is used to set the API key attribute of the `RepoAssistant` object, which is used for authentication purposes. The `api_base` parameter is used to set the API base URL attribute, which specifies the base URL for API requests. The `db_path` parameter is used to set the database path attribute, which represents the path to the database.
 
-The function initializes the following attributes:
-- `self.api_key`: Stores the provided API key.
-- `self.api_base`: Stores the provided API base.
-- `self.db_path`: Stores the provided database path.
-- `self.md_contents`: Initializes an empty list to store Markdown contents.
-- `self.llm`: Initializes an instance of the `OpenAI` class with the provided API key, API base, and model name "gpt-3.5-turbo-1106".
-- `self.client`: Initializes an instance of the `OpenAI` class with the provided API key, API base, and model name "gpt-4-1106-preview".
-- `self.lm`: Initializes an instance of the `AI` class with the provided API key and base URL.
-- `self.textanslys`: Initializes an instance of the `TextAnalysisTool` class with the `llm` and `db_path` attributes.
-- `self.json_data`: Initializes an instance of the `JsonFileProcessor` class with the provided `db_path`.
-- `self.chroma_data`: Initializes an instance of the `ChromaManager` class with the provided `api_key` and `api_base`.
+In addition to setting the attributes, the `__init__` function also initializes other objects and tools required for the functioning of the `RepoAssistant`. These include the `OpenAI` model objects (`llm`, `client`, and `lm`), the `TextAnalysisTool` object (`textanslys`), the `JsonFileProcessor` object (`json_data`), and the `ChromaManager` object (`chroma_data`).
 
-The `__init__` function is called when a new `RepoAssistant` object is created. It sets up the necessary attributes and objects required for the functionality of the `RepoAssistant` class.
+The `llm` object is initialized with the provided API key, API base URL, and the model name "gpt-3.5-turbo-1106". The `client` object is initialized with the same API key, API base URL, and the model name "gpt-4-1106-preview". The `lm` object is initialized with the API key and base URL.
+
+The `textanslys` object is initialized with the `llm` object and the database path. This object provides various text analysis functionalities such as keyword extraction, tree structure generation, formatting chat prompts, searching code blocks, converting search results to Markdown format, and extracting relevant class or function names.
+
+The `json_data` object is initialized with the database path. This object is responsible for processing JSON files, extracting specific data, and searching for code contents based on given criteria.
+
+The `chroma_data` object is initialized with the API key and API base URL. This object manages collections in ChromaDB, including initializing a collection and creating a vector store.
+
+Overall, the `__init__` function sets up the necessary attributes and initializes the required objects and tools for the functioning of the `RepoAssistant` class.
 
 **Note**:
-- Ensure that the provided API key, API base, and database path are valid and accessible.
-- The `llm`, `client`, `lm`, `textanslys`, `json_data`, and `chroma_data` attributes are initialized with specific objects to facilitate various functionalities within the `RepoAssistant` class.
+- Ensure that the API key, API base URL, and database path are provided correctly when initializing the `RepoAssistant` object.
+- Handle any exceptions that may occur during the initialization process appropriately.
+- Make sure to have the required dependencies installed and accessible before using the `RepoAssistant` class.
 ***
 ### FunctionDef generate_queries(self, query_str, num_queries)
 **generate_queries**: The function of generate_queries is to generate multiple search queries based on a single input query.
 
 **parameters**:
-- query_str: A string representing the input query.
-- num_queries: An integer specifying the number of search queries to generate. (Default value is 4)
+- query_str: a string representing the input query.
+- num_queries: an integer indicating the number of search queries to generate (default value is 4).
 
 **Code Description**:
-The generate_queries function takes an input query string and an optional number of queries to generate. It constructs a prompt template based on the input query and the desired number of queries. The function then utilizes a language model to complete the prompt and retrieve a list of generated search queries. These queries are returned as a list for further processing.
+The `generate_queries` function takes an input query string and generates multiple search queries related to the input query. It constructs a prompt template based on the input query and the number of queries to generate. The function then uses a language model to complete the prompt and extract the generated queries. Finally, it returns a list of the generated queries.
 
-In the project structure, generate_queries is a method within the RepoAssistant class, specifically located in the rag.py file under the chat_with_repo module. This function is called within the respond method of the same class to generate search queries based on user input and facilitate information retrieval.
+In the project, this function is called within the `respond` method of the `RepoAssistant` class. After processing the input message and instruction, the `respond` method utilizes the `generate_queries` function to generate search queries based on the input prompt. These generated queries are later used to retrieve relevant documents and code snippets for further processing and response generation.
 
 **Note**:
-- The generate_queries function is designed to assist in generating search queries efficiently based on a given input query.
-- It provides flexibility by allowing the specification of the number of queries to generate, with a default value of 4 if not explicitly provided.
+- Ensure that the input query string is provided in the `query_str` parameter.
+- The `num_queries` parameter determines the number of search queries to generate, with a default value of 4 if not specified.
 
 **Output Example**:
-If generate_queries is called with the input query "example query" and the number of queries set to 3, the expected output could be a list of 3 search queries related to the input query.
+If the function is called with `generate_queries("example query", 2)`, it may return:
+["Generated Query 1", "Generated Query 2"]
 ***
 ### FunctionDef rerank(self, query, docs)
-**rerank**: The function of rerank is to reorder a list of documents based on their relevance scores to a given query.
+**rerank**: The function of rerank is to sort a list of documents based on their relevance scores and return the top 5 most relevant document contents.
 
 **parameters**:
-- query: A string representing the query for which the documents are being ranked.
-- docs: A list of dictionaries, where each dictionary represents a document with 'content' and 'relevance_score' fields.
+- query: Represents the query for which the documents are being ranked.
+- docs: Represents the list of documents to be ranked based on relevance scores.
 
 **Code Description**:
-The rerank function takes a query and a list of documents as input. It then sends a completion request to a language model to obtain relevance scores for the documents. The function extracts the relevance scores, sorts the documents based on these scores in descending order, and returns the content of the top 5 most relevant documents.
+The rerank function takes a query and a list of documents as input. It then sends a request to a language model to rank the documents based on their relevance scores. The function retrieves the relevance scores from the response, sorts the documents in descending order of relevance scores, and returns the content of the top 5 most relevant documents.
 
-In the project, the rerank function is called within the respond function of the RepoAssistant class. After retrieving and processing documents based on user input, the respond function utilizes rerank to reorder the documents based on relevance scores before further processing the information and generating a response.
-
-**Note**: 
-It is essential to ensure that the 'docs' parameter is in the correct format with 'content' and 'relevance_score' fields in each dictionary for the function to work correctly.
-
-**Output Example**:
-['Top document content 1', 'Top document content 2', 'Top document content 3', 'Top document content 4', 'Top document content 5']
-***
-### FunctionDef rag(self, query, retrieved_documents)
-**rag**: The function of rag is to generate a response by combining a user query with information retrieved from documents.
-
-**parameters**:
-- query: The user's question or query.
-- retrieved_documents: A list of documents containing relevant information.
-
-**Code Description**:
-The `rag` function takes a user query and a list of retrieved documents as input. It then formats the information from the documents and the user's question into a message. This message is passed to the `llm.complete` method to generate a response. The final response is returned by the function.
-
-In the project structure, the `rag` function is utilized within the `respond` method of the `RepoAssistant` class. After retrieving relevant documents based on the user's message, the `respond` method calls the `rag` function to generate a response by combining the user's query with the retrieved information. This response is further processed to extract keywords and code blocks before being returned to the caller.
+In the project, the rerank function is called within the respond function of the RepoAssistant class. After retrieving a list of unique documents and codes, the respond function calls rerank to further refine the list of documents based on relevance scores before passing it to other functions for additional processing. The rerank function plays a crucial role in ensuring that the most relevant documents are presented to the user in response to their query.
 
 **Note**:
-Ensure that the `llm.complete` method is properly configured to handle the message generation and response.
-Make sure the input parameters are correctly formatted to match the expected data types.
+It is important to ensure that the response format from the language model is consistent to avoid any issues with parsing the relevance scores.
+Ensure that the input query and document list are correctly formatted to receive accurate relevance scores.
 
 **Output Example**:
-If the user query is 'How to install Python?', and the retrieved documents contain installation instructions, the expected response from the `rag` function would be: "To install Python, follow these steps..."
+['Document 1 content', 'Document 2 content', 'Document 3 content', 'Document 4 content', 'Document 5 content']
+***
+### FunctionDef rag(self, query, retrieved_documents)
+**rag**: The function of rag is to generate a response for a given query by combining the query and retrieved documents, then passing the combined information to a language model for completion.
+
+**parameters**:
+- query: A string representing the user's question.
+- retrieved_documents: A list of strings containing relevant information from the repository.
+
+**Code Description**:
+The `rag` function takes a query and a list of retrieved documents as input. It then combines the retrieved documents into a single string, along with the user's question. This combined information is passed to a language model to generate a response. The function returns the response generated by the language model.
+
+In the project structure, the `rag` function is called by the `respond` method in the `RepoAssistant` class. The `respond` method processes a user message, retrieves relevant documents, and then calls the `rag` function to generate a response based on the user's query and retrieved documents.
+
+**Note**: 
+- Ensure that the `llm` attribute of the object calling the `rag` function has a `complete` method that can process the combined information.
+- The `rerank` method is used to prioritize and select the most relevant documents for the response.
+- The `list_to_markdown` method is used to convert lists of strings into a markdown format for better readability.
+
+**Output Example**:
+"If the user's question is 'How to create a new branch?', and the retrieved documents contain information on branching strategies and commands, the response generated by the `rag` function could be: 'To create a new branch, use the git branch command. Remember to switch to the new branch using git checkout -b <branch_name>.'"
 ***
 ### FunctionDef list_to_markdown(self, list_items)
 **list_to_markdown**: The function of list_to_markdown is to convert a list of items into a markdown formatted string with numbered list items.
@@ -144,13 +126,13 @@ If the user query is 'How to install Python?', and the retrieved documents conta
 - list_items: A list of items to be converted into a markdown numbered list.
 
 **Code Description**:
-The `list_to_markdown` function takes a list of items as input and iterates through each item, adding a numbered list item to the markdown content string. Each item in the list is prefixed with its index starting from 1. The function then returns the markdown formatted string with numbered list items.
+The `list_to_markdown` function takes a list of items as input and iterates through each item, adding a numbered list item to a markdown formatted string. Each item in the list is prefixed with its index in the list followed by a period and a space. The function then returns the markdown formatted string containing the numbered list items.
 
-This function is called within the `respond` method of the `RepoAssistant` class in the `rag.py` file. In the `respond` method, after retrieving and processing relevant information, the `list_to_markdown` function is used to convert a list of unique code snippets into a markdown formatted string. The resulting markdown content is then included in the response message generated by the `respond` method.
+This function is called within the `respond` method of the `RepoAssistant` class in the `rag.py` file. In the `respond` method, the `list_to_markdown` function is used to convert a list of unique code snippets into a markdown formatted string for display in the response message. The markdown formatted string is then included in the final response along with other processed information.
 
 **Note**:
-Ensure that the input list_items is a valid list data structure containing the items to be converted into markdown.
-Make sure to handle the returned markdown content appropriately in the calling function.
+- Ensure that the input list_items parameter is a valid list data type.
+- The function assumes that the input list_items contain string elements.
 
 **Output Example**:
 1. Item 1
@@ -158,62 +140,78 @@ Make sure to handle the returned markdown content appropriately in the calling f
 3. Item 3
 ***
 ### FunctionDef rag_ar(self, query, related_code, embedding_recall, project_name)
-**rag_ar**: The function of rag_ar is to generate a response for a user query by incorporating related code snippets and documents based on the provided information.
+**rag_ar**: The function of rag_ar is to generate a response for a Repository-Level Software Q&A assistant based on the user's query, related code snippets, documents, and the project name.
 
 **parameters**:
 - query: The user's question.
-- related_code: Code snippets related to the user's query.
-- embedding_recall: Relevant documents related to the user's query.
+- related_code: The related code snippets recalled by the retriever.
+- embedding_recall: The relevant documents recalled by the retriever.
 - project_name: The name of the current project.
 
 **Code Description**:
-The rag_ar function takes in the user's question, related code snippets, relevant documents, and the project name as input parameters. It then constructs a message system incorporating this information to provide a specific, detailed, and professional answer to the user's query. The function utilizes a client to complete the message system and returns the response content.
+The rag_ar function constructs a message system containing information about the assistant's role, the user's question, related code snippets, and relevant documents. It then uses a language model to generate a response incorporating the provided information. The final response is returned to the caller.
 
-In the project structure, the rag_ar function is called by the respond function in the same module. The respond function processes the user's message, generates queries, retrieves relevant documents and code snippets, and then calls the rag function to further refine the response. Finally, the respond function calls the rag_ar function to generate a detailed response based on the user's query and the retrieved information.
+In the calling situation within the project, the rag_ar function is invoked by the respond function in the same module. The respond function processes a user message, retrieves related documents and code snippets, generates a response using the rag function, and finally calls rag_ar to provide a detailed answer based on the user's query and the retrieved information.
 
 **Note**:
-- Ensure to provide accurate and detailed responses based on the user's query and the provided information.
-- The function relies on external components such as a client for message completion.
-- The response generated should be in the same language as the user's question for clarity and professionalism.
+Ensure that the provided recall results are relevant to the current project and filter useful information for accurate responses. The function aims to offer specific, detailed, and professional answers to user queries based on the given context.
 
 **Output Example**:
-An example of the return value from the rag_ar function could be a detailed response message tailored to the user's query, incorporating related code snippets and documents specific to the current project.
+"Hello, you are a helpful Repository-Level Software Q&A assistant. Your task is to answer users questions based on given information about a software repository, including related code and documents. Currently, you're in the test project. The user's question is: How to implement feature X? Now, you are given related code and documents as follows: 
+-------------------Code-------------------
+Some most likely related code snippets recalled by the retriever are:
+{related_code}
+-------------------Document-------------------
+Some most relevant documents recalled by the retriever are:
+{embedding_recall}
+Please note:
+1. All the provided recall results are related to the current project test. Please filter useful information according to the user's question and provide corresponding answers or solutions.
+2. Ensure that your responses are accurate and detailed. Present specific answers in a professional manner and tone. If you find the user's question completely unrelated to the provided information or if you believe you cannot provide an accurate answer, kindly decline. Note: DO NOT fabricate any non-existent information.
+Now, focusing on the user's query, and incorporating the given information to offer a specific, detailed, and professional answer IN THE SAME LANGUAGE AS the user's question."
 ***
 ### FunctionDef respond(self, message, instruction)
-**respond**: The function of respond is to generate a response message based on a user's message and instruction.
+**respond**: The function of respond is to process a user message and an instruction, generate questions using the `keyword` function, and perform various operations to retrieve relevant code documents. It then uses the RAG model to generate a response based on the retrieved documents and the user's query.
 
 **parameters**:
 - self: The reference to the current instance of the class.
-- message: A string representing the user's message in the chat.
-- instruction: A string indicating the system's instruction or message to the user.
+- message: Represents the user's message in the chat.
+- instruction: Represents the system's instruction or message in the chat.
 
 **Code Description**:
-The `respond` function is a method within the `RepoAssistant` class. It takes in a user message and an instruction as parameters. The function first formats the chat prompt by calling the `format_chat_prompt` method from the `TextAnalysisTool` class. This method generates a formatted prompt message that includes the system instruction, user message, and an empty placeholder for the assistant's response.
+The `respond` function takes in a user message and a system instruction as input. It first formats the chat prompt using the `format_chat_prompt` function from the `TextAnalysisTool` module. The formatted prompt includes the system's instruction, the user's message, and a placeholder for the assistant's response. 
 
-Next, the function calls the `keyword` method from the `TextAnalysisTool` class to extract keywords related to the user's message and instruction. These keywords are used to generate queries by calling the `generate_queries` method within the `RepoAssistant` class. The generated queries are then used to query a collection of documents and metadata.
+Next, the function calls the `keyword` function from the `TextAnalysisTool` module to generate a list of code keywords based on the formatted prompt. These keywords are used to generate queries using the `generate_queries` function. The function then retrieves relevant code documents by querying a collection of documents using the generated queries and the `chroma_data` object.
 
-The function retrieves the query results and extracts the relevant document IDs. It then retrieves the unique documents and code snippets based on the IDs. The retrieved documents are further processed by calling the `rerank` method to reorder them based on their relevance scores to the user's query.
+The retrieved documents are processed to extract unique document IDs and their corresponding code contents. The function then uses the `rerank` function to sort the retrieved documents based on their relevance scores and selects the top 5 most relevant documents. 
 
-After reranking the documents, the function calls the `rag` method to generate a response by combining the user's query with the retrieved documents. The response is further processed by calling the `nerquery` method from the `TextAnalysisTool` class to extract keywords from the bot message and the prompt questions.
+After reranking the documents, the function calls the `rag` function to generate a response using the RAG model. The response is further processed using the `list_to_markdown` function to convert the list of retrieved documents into a markdown formatted string. 
 
-The extracted keywords are used to query code blocks by calling the `queryblock` method from the `TextAnalysisTool` class. The code blocks and markdown content are then combined and formatted using the `list_to_markdown` method from the `TextAnalysisTool` class.
+The function also utilizes the `nerquery` function to extract relevant keywords from the bot message and the prompt questions. These keywords are used to query blocks of code using the `queryblock` function. The retrieved code blocks are then processed and combined with the previously retrieved code contents.
 
-Finally, the function calls the `rag_ar` method to generate a detailed response message by incorporating related code snippets and documents specific to the current project. The response message is returned as the output of the `respond` function.
-
-This function plays a crucial role in the chatbot assistant's ability to generate informative and relevant responses to user queries. It utilizes various methods from the `TextAnalysisTool` class to extract keywords, query code blocks, and format the response message. The `respond` function also leverages the `rerank` and `rag` methods to retrieve and process relevant documents and generate a tailored response.
+Finally, the function returns the user's message, the generated bot message, the markdown formatted list of retrieved documents, the generated questions, the unique code snippets, and the markdown formatted code blocks.
 
 **Note**:
-- Ensure that the `message` and `instruction` parameters are provided correctly to generate an accurate prompt message.
-- The accuracy of the response generated depends on the relevance and quality of the retrieved documents and code snippets.
-- Proper error handling is essential to manage exceptions effectively.
+- Ensure that the `message` and `instruction` parameters are provided correctly to generate the desired chat prompt.
+- The `keyword` function limits the output to a maximum of 3 keywords.
+- The `generate_queries` function generates a default of 4 search queries if the `num_queries` parameter is not specified.
+- The `rerank` function selects the top 5 most relevant documents based on their relevance scores.
+- The `list_to_markdown` function converts the list of retrieved documents into a markdown formatted string with numbered list items.
+- The `nerquery` function extracts relevant keywords from the bot message and the prompt questions.
+- The `queryblock` function searches for specific text within a JSON file and retrieves matching code content and markdown content.
 
 **Output Example**:
-If the function is called with a user message "How to install Python?" and an instruction "Provide installation instructions", the return value might be:
-- message: "How to install Python?"
-- bot_message: "To install Python, follow these steps..."
-- chunkrecall: "1. Top document content 1\n2. Top document content 2\n3. Top document content 3"
-- questions: "keyword1, keyword2"
-- unique_code: "Matching code content 1, Matching code content 2"
-- codex: "Matching code content 1, Matching code content 2"
-
+If the user's message is "How to create a new branch?" and the retrieved documents contain information on branching strategies and commands, the function may return:
+- User message: "How to create a new branch?"
+- Bot message: "To create a new branch, use the git branch command. Remember to switch to the new branch using git checkout -b <branch_name>."
+- Markdown formatted list of retrieved documents:
+  1. Document 1 content
+  2. Document 2 content
+  3. Document 3 content
+  4. Document 4 content
+  5. Document 5 content
+- Generated questions: ["question1", "question2", "question3"]
+- Unique code snippets: ["code_snippet1", "code_snippet2"]
+- Markdown formatted code blocks:
+  1. Code block 1
+  2. Code block 2
 ***

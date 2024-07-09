@@ -1,28 +1,38 @@
 ## ClassDef SpecificModel
-**SpecificModel**: The function of SpecificModel is to create a specialized model for chat language chain operations with specific functionalities.
+**SpecificModel**: The SpecificModel class is responsible for handling specific functionalities within the chat language chain system.
 
 **attributes**:
-- path: The path to the model.
+- path: The path to the markdown files.
 - path_hierarchy: The path to the hierarchy.
 - model_name: The name of the model.
 - chunk_size: The size of the document chunks.
 - chunk_overlap: The overlap between document chunks.
-- metadata_field_info: Information about metadata fields.
-- retriever: A retriever object for self-querying.
+- metadata_field_info: A list of AttributeInfo objects representing metadata field information.
+- retriever: An instance of the SelfQueryRetriever class.
+- chain: Represents the chat language chain.
 - docs: Holds the loaded documents.
 
 **Code Description**:
-The SpecificModel class extends the Model class and initializes with the provided parameters. It loads documents from the specified path, sets up a vector store, and creates a retriever for self-querying. The set_chain method is responsible for setting up the chat language chain. The load_docs method loads documents from the path. The get_docs method returns the loaded documents.
+The SpecificModel class is a subclass of the Model class and inherits its attributes and methods. It initializes with the path, path_hierarchy, model_name, chunk_size, and chunk_overlap parameters. The path parameter represents the path to the markdown files, while the path_hierarchy parameter represents the path to the hierarchy. The model_name parameter specifies the name of the model. The chunk_size and chunk_overlap parameters determine the size and overlap of the document chunks.
 
-The SpecificModel class is part of the chat language chain project and is called within the ChatRepo class in the chat.py file to create a specific model instance for chunking documents. It interacts with the Model class for foundational functionalities and is utilized in the show_chunk function in the main.py file to demonstrate document chunking.
+The class contains several methods to handle specific functionalities within the chat language chain system. The load_docs method loads the markdown documents from the specified path and stores them in the docs attribute.
 
-**Note**: Ensure to provide necessary parameters when initializing the SpecificModel class to enable its functionalities effectively. The class is designed to work in conjunction with other components of the chat language chain project.
+The get_docs method returns the loaded documents.
+
+The set_chain method sets up the chat language chain by creating prompt templates and a runnable chain. It initializes the history_prompt and qa_system_prompt variables using utility functions. It then creates a prompt template for chat interactions using the create_chat_prompt method inherited from the Model class. Finally, it creates a runnable chain by calling the create_runnable_chain method inherited from the Model class.
+
+The load_docs and set_chain methods are called in the __init__ method to ensure that the documents are loaded and the chat language chain is set up when an instance of the SpecificModel class is created.
+
+The SpecificModel class plays a crucial role in the chat language chain system by handling specific functionalities such as loading documents, setting up the chat language chain, and providing access to the loaded documents.
+
+**Note**: When utilizing the SpecificModel class, ensure to provide the necessary parameters when initializing the class to enable its functionalities effectively.
 
 **Output Example**:
 ```python
-specific_model = SpecificModel("path/to/model", "path/to/hierarchy", "model_name", 500, 50)
+specific_model = SpecificModel("path/to/markdown", "path/to/hierarchy", "model_name", 1000, 100)
+specific_model.load_docs()
+docs = specific_model.get_docs()
 specific_model.set_chain()
-loaded_docs = specific_model.get_docs()
 ```
 ### FunctionDef __init__(self, path, path_hierarchy, model_name, chunk_size, chunk_overlap)
 **__init__**: The function of __init__ is to initialize the SpecificModel object by setting up the necessary attributes, loading documents from a specified directory, configuring a vector store, creating a retriever object, and establishing a chat message processing chain.
@@ -47,34 +57,35 @@ In the project structure, the __init__ function is a crucial part of initializin
 - Understand the sequence of operations within the __init__ function to grasp the overall setup process of the SpecificModel class for chat message processing.
 ***
 ### FunctionDef set_chain(self)
-**set_chain**: The function of set_chain is to initialize the chat message processing chain by creating prompt templates for contextualizing questions and question-answer interactions, and setting up a retrieval chain.
+**set_chain**: The function of set_chain is to establish a chat message processing chain by creating prompt templates for question-answer interactions and chat history, and then constructing a retrieval chain using these prompts along with a retriever object.
 
 **parameters**:
-- This function does not take any parameters explicitly defined within its scope.
+- This function does not take any parameters.
 
 **Code Description**:
-The set_chain function first retrieves the system prompts for contextualizing questions and question-answer interactions using the utilities.get_contextualize_q_system_prompt and utilities.get_qa_system_prompt functions, respectively. It then calls the create_runnable_chain method from the Model class to construct a chain for processing chat messages. This chain includes components such as contextualize_q_system_prompt, qa_system_prompt, and a retriever object. By utilizing these components, the function establishes a structured flow for handling chat messages effectively within the conversation chain.
+The set_chain function first retrieves a system prompt for chat history from the get_dont_contextualize_system_prompt function and a prompt for question-answer interactions from the get_qa_system_prompt function. It then utilizes the create_runnable_chain function from the Model class to generate a runnable chain incorporating the retrieved prompts and the retriever object. By doing so, it sets up a structured flow within the chat processing chain, ensuring effective handling of chat messages within the SpecificModel context.
 
-In the project structure, set_chain is called within the __init__ method of the SpecificModel class. This method is responsible for setting up the entire model, loading necessary documents, configuring vector stores, initializing metadata field information, creating a retriever object, and finally, initializing the chat message processing chain through set_chain.
+This function is called within the __init__ method of the SpecificModel class to initialize the chat message processing chain along with other essential components such as document loading, vector store configuration, and retriever creation. The set_chain function plays a crucial role in preparing the SpecificModel object for processing chat interactions seamlessly within the defined model context.
 
 **Note**:
-- Ensure that the necessary prompts and retriever object are properly set up before calling set_chain.
-- The function plays a crucial role in establishing the message flow and structure of the conversation chain for processing chat messages efficiently within the SpecificModel class.
+- The set_chain function relies on the create_runnable_chain function to create a functional chat message processing chain.
+- Ensure valid prompts and a retriever object are provided to set up the chat processing chain effectively.
+- Understanding the interaction between set_chain and create_runnable_chain is essential for comprehending the flow of chat message processing within the SpecificModel class.
 ***
 ### FunctionDef load_docs(self)
-**load_docs**: The function of load_docs is to load all documents from a specified directory using a DirectoryLoader and store them in the object's 'docs' attribute.
+**load_docs**: The function of load_docs is to load documents from a specified directory using a DirectoryLoader, gather all the loaded documents, and assign them to the 'docs' attribute of the object.
 
 **parameters**:
-- self: The object itself.
+- None
 
-**Code Description**:
-The load_docs function iterates through all subdirectories in the specified path using os.walk. For each subdirectory, it creates a DirectoryLoader instance with the path, a specific file extension pattern (glob), and a loader class. It then loads the documents using the loader and appends them to the 'all_docs' list. Finally, it assigns the 'all_docs' list to the object's 'docs' attribute.
+**Code Description**: 
+The load_docs function initializes an empty list named 'all_docs' to store the loaded documents. It then normalizes the path to the directory containing the documents and iterates through each subdirectory using os.walk. Within each subdirectory, it creates a DirectoryLoader object to load Markdown files ('.md') with the help of UnstructuredMarkdownLoader. The loaded documents are then added to the 'all_docs' list. Finally, the function assigns the aggregated documents to the 'docs' attribute of the object.
 
-In the calling situation, the load_docs function is called within the __init__ method of the SpecificModel class. After initializing some attributes and calling the parent class's set_vectorstore method, load_docs is invoked to load all documents from the specified path. This step is crucial for setting up the object with the necessary document data before further processing.
+The load_docs function plays a crucial role in the SpecificModel class by enabling the loading of documents from a specified directory, which is essential for subsequent processing steps such as vector store configuration, retriever creation, and chat message processing chain establishment.
 
 **Note**:
-- Ensure that the 'path' attribute of the object is correctly set before calling load_docs to load documents from the intended directory.
-- The documents loaded by this function will be stored in the 'docs' attribute of the object for subsequent use within the model.
+- Ensure that the 'path_marksdown' attribute of the object points to a valid directory containing Markdown files before calling the load_docs function.
+- Understand that the successful execution of load_docs is a prerequisite for the proper functioning of other components within the SpecificModel class, such as retriever creation and chat message processing.
 ***
 ### FunctionDef get_docs(self)
 **get_docs**: The function of get_docs is to return the value of the "docs" attribute stored in the object.

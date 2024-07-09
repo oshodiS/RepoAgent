@@ -1,31 +1,23 @@
 ## ClassDef Summarizator
-**Summarizator**: The function of Summarizator is to provide methods for summarizing a set of documents and generating a consolidated summary of their contents.
+**Summarizator**: The function of Summarizator is to provide a mechanism for summarizing a set of documents by utilizing a language model to generate concise summaries.
 
 **attributes**:
-- path: The path to the directory containing the documents.
-- llm: An instance of the ChatOpenAI class for language modeling.
-- docs: A list to store the documents.
-- map_reduce_chain: A chain of operations for mapping and reducing the documents.
+- path: The path to the directory containing the documents to be summarized.
+- llm: An instance of the ChatOpenAI class used for language modeling.
+- docs: A variable to store the documents to be summarized.
+- map_reduce_chain: A chain of operations for mapping and reducing the documents to generate summaries.
 
 **Code Description**:
-The Summarizator class initializes with a path to the document directory and a model name. It contains methods to split documents into chunks, read markdown files, and generate a consolidated summary of the documents.
+The Summarizator class initializes with a path to the document directory and a model name. It utilizes a language model to create a map-reduce chain for summarizing documents. The get_map_reduce_chain method sets up the map and reduce templates, creates LLMChain instances, and configures the map-reduce chain for document summarization. The split_documents method splits a document into chunks based on headers. The get_first_summarization method reads Markdown files from the specified path, splits the documents, and invokes the map-reduce chain to generate a summary.
 
-The `get_map_reduce_chain` method sets up a chain of operations for mapping and reducing the documents using language models. It defines templates for mapping and reducing the documents, creates LLMChain instances, and configures the map-reduce chain for processing the documents.
-
-The `split_documents` method splits a document into chunks based on specified headers and text size parameters.
-
-The `read_md_files` method reads markdown files from a specified root path and returns a list of documents.
-
-The `get_first_summarization` method reads markdown files from the specified path, splits them into chunks, sets up the map-reduce chain, and generates a consolidated summary of the documents.
-
-The Summarizator class is called in the Runner class of the project to summarize markdown documents. The Runner class initializes various components including the Summarizator instance with the markdown folder path and model name for chat completion.
+The Summarizator class is called in the Runner class in the project. The Runner class initializes various components, including the Summarizator instance, to manage the project hierarchy, detect changes, and interact with the chat engine. The Summarizator instance is created with the path to Markdown documents and a chat completion model.
 
 **Note**:
-- Ensure the path provided to the Summarizator class points to a directory containing markdown files.
-- The Summarizator class relies on external libraries and classes such as ChatOpenAI, LLMChain, and MarkdownHeaderTextSplitter for its operations.
+- Ensure the path provided to Summarizator points to a directory containing Markdown files for summarization.
+- The language model used for summarization can be customized by changing the model_name parameter in the Summarizator initialization.
 
 **Output Example**:
-A consolidated summary of the documents based on the mapping and reducing operations performed by the Summarizator class.
+"A concise summary of the overall contents of the provided documents."
 ### FunctionDef __init__(self, path, model_name)
 **__init__**: The function of __init__ is to initialize the object with the provided path and model name.
 
@@ -40,21 +32,22 @@ In this function, the provided path and model name are assigned to the object's 
 Ensure that the path and model name are correctly provided when initializing an instance of this object.
 ***
 ### FunctionDef get_map_reduce_chain(self)
-**get_map_reduce_chain**: The function of get_map_reduce_chain is to set up a chain of processes for mapping and reducing documents using LLMChain.
+**get_map_reduce_chain**: The function of get_map_reduce_chain is to set up a map-reduce chain for processing a list of documents.
 
 **parameters**:
 - None
 
-**Code Description**: 
-The get_map_reduce_chain function initializes a map chain and a reduce chain using LLMChain with specific templates for mapping and reducing documents. It then creates chains for combining and reducing documents iteratively. Finally, it constructs a MapReduceDocumentsChain that combines the map and reduce chains to process a list of documents.
+**Code Description**:
+The `get_map_reduce_chain` function initializes a map chain and a reduce chain using LLMChain with specific templates for mapping and reducing documents. It then creates chains for combining and reducing documents iteratively. Subsequently, it constructs a MapReduceDocumentsChain that combines the map and reduce chains to process a list of documents. The resulting map-reduce chain is assigned to the `self.map_reduce_chain` attribute.
 
-In the calling object get_first_summarization, after splitting the input documents, the get_map_reduce_chain function is invoked to generate a summary by running the map_reduce_chain on the split documents.
+In the project, the `get_map_reduce_chain` function is called within the `get_first_summarization` function to establish the map-reduce chain for processing split documents. The `get_first_summarization` function is invoked by the `first_generate` and `run` methods in the `Runner` class.
 
-**Note**: 
-- This function is crucial for setting up the document summarization process in the project.
-- The map and reduce templates provide guidelines for creating descriptions and summaries.
+**Note**:
+- The `get_map_reduce_chain` function plays a crucial role in setting up the map-reduce chain for document processing.
+- It is an essential component in the document summarization process within the project.
+- The function is part of a chain of functions that work together to generate a consolidated summary of input documents.
 
-**Output Example**: 
+**Output Example**:
 "The final consolidated summary captures the main points and key details from each document. The output_text contains the summarized content."
 ***
 ### FunctionDef split_documents(self, doc, chunk_size, chunk_overlap)
@@ -83,59 +76,53 @@ Make sure to adjust the `chunk_size` and `chunk_overlap` parameters according to
 ]
 ```
 ***
-### FunctionDef read_md_files(slef, root_path)
-**read_md_files**: The function of read_md_files is to read all Markdown files (.md) from a specified root path and return a list of documents.
-
-**parameters**:
-- root_path: The root path from which to start searching for Markdown files.
-
-**Code Description**:
-The `read_md_files` function iterates through all subdirectories in the specified `root_path` using `os.walk`. For each subdirectory, it creates a `DirectoryLoader` object to load all Markdown files (with the extension .md) using the `UnstructuredMarkdownLoader` class. The function then appends the loaded documents to the `all_docs` list. Finally, it returns the list of all loaded documents.
-
-In the project, this function is called by the `get_first_summarization` method in the `Summarizator` class. The `get_first_summarization` method first prints the path, then calls `read_md_files` to load Markdown files. It processes the loaded documents by splitting them and assigning metadata. After preparing the data, it invokes a map-reduce chain and generates a summary based on the processed documents.
-
-**Note**:
-- Ensure that the `root_path` parameter is a valid directory path.
-- Make sure that the `UnstructuredMarkdownLoader` class is correctly implemented to load Markdown files.
-
-**Output Example**:
-```python
-[
-    {
-        'title': 'Document 1',
-        'content': 'This is the content of document 1.',
-        'metadata': {'author': 'Alice'}
-    },
-    {
-        'title': 'Document 2',
-        'content': 'This is the content of document 2.',
-        'metadata': {'author': 'Bob'}
-    },
-    ...
-]
-```
-***
 ### FunctionDef get_first_summarization(self)
-**get_first_summarization**: The function of get_first_summarization is to generate a summary of the documents based on a map-reduce chain.
+**get_first_summarization**: The function of get_first_summarization is to generate a summary of the first document in the target repository. It reads the Markdown files from the specified root path, splits the document into chunks of text, and processes the splits using a map-reduce chain. The resulting summary captures the main points and key details from the document.
 
 **parameters**:
 - None
 
 **Code Description**:
-The `get_first_summarization` function is a crucial part of the document summarization process in the project. It starts by printing the path and then proceeds to read Markdown files using the `read_md_files` function. After reading the files, it splits the documents into smaller chunks using the `split_documents` function. The split documents are then processed using a map-reduce chain generated by the `get_map_reduce_chain` function. Finally, the function invokes the map-reduce chain on the split documents to generate a summary.
+The `get_first_summarization` function is responsible for generating a summary of the first document in the target repository. It starts by printing the path of the current object. Then, it calls the `read_md_files` function to read the Markdown files from the specified root path and assigns the result to the `self.docs` attribute.
 
-The `get_first_summarization` function first checks if there are any documents to summarize. If there are, it initializes an empty list called `all_splits` to store the split documents. It then iterates over each document and splits it into smaller chunks using the `split_documents` function. For each split document, it assigns a filename to the `metadata` attribute and adds it to the `all_splits` list. After splitting all the documents, it assigns the `all_splits` list to the `self.all_splits` attribute.
+Next, the function checks if the `self.docs` list is not empty. If it is not empty, it initializes an empty list called `all_splits`. It then iterates over each document in the `self.docs` list and calls the `split_documents` function to split the document into chunks of text. The `split_documents` function takes the document, a chunk size, and a chunk overlap as parameters. It returns a list of splits. Each split represents a chunk of text from the document.
 
-Next, the function calls the `get_map_reduce_chain` function to set up a map-reduce chain for processing the split documents. The `get_map_reduce_chain` function initializes a map chain and a reduce chain using LLMChain with specific templates for mapping and reducing documents. It then creates chains for combining and reducing documents iteratively. Finally, it constructs a MapReduceDocumentsChain that combines the map and reduce chains to process a list of documents. The resulting map-reduce chain is assigned to the `self.map_reduce_chain` attribute.
+Within the iteration, the function also assigns a filename to each split by extracting the basename from the metadata of the document. It then extends the `all_splits` list with the splits.
 
-Finally, the function invokes the map-reduce chain on the split documents by calling the `invoke` method of the map-reduce chain. It retrieves the summarized output text from the map-reduce chain and assigns it to the `summary` variable. The `summary` variable is then returned as the output of the `get_first_summarization` function.
+After processing all the documents, the function assigns the `all_splits` list to the `self.all_splits` attribute.
+
+The function then calls the `get_map_reduce_chain` function to set up a map-reduce chain for processing the splits. The `get_map_reduce_chain` function initializes a map chain and a reduce chain using LLMChain with specific templates for mapping and reducing documents. It combines and reduces the mapped documents iteratively. Finally, it constructs a MapReduceDocumentsChain that combines the map and reduce chains to process the splits. The resulting map-reduce chain is assigned to the `self.map_reduce_chain` attribute.
+
+Finally, the function invokes the map-reduce chain using the `self.all_splits` list as input. It retrieves the output_text from the map-reduce chain's invoke method and assigns it to the `summary` variable.
+
+The function returns the `summary`, which represents the generated summary of the first document in the target repository.
 
 **Note**:
-- The `get_map_reduce_chain` function is called within the `get_first_summarization` function to set up the map-reduce chain for processing the split documents.
-- The `split_documents` function is called within the `get_first_summarization` function to split the input documents into smaller chunks.
-- The `read_md_files` function is called within the `get_first_summarization` function to read Markdown files and return a list of documents.
-- The `get_first_summarization` function is called by the `first_generate` and `run` methods in the `Runner` class.
+- The `get_first_summarization` function is an essential component in the document summarization process within the project.
+- It relies on the `read_md_files` and `split_documents` functions to read and process the Markdown files.
+- The `get_map_reduce_chain` function plays a crucial role in setting up the map-reduce chain for document processing.
+- The resulting summary captures the main points and key details from the first document.
+- Developers can use this function to generate a summary of the first document in the target repository.
 
 **Output Example**:
-"The final consolidated summary captures the main points and key details from each document. The output_text contains the summarized content."
+"The generated summary captures the main points and key details from the first document."
+***
+### FunctionDef read_md_files(root_path)
+**read_md_files**: The function of read_md_files is to read Markdown files from a specified root path and return a list of all the documents found.
+
+**parameters**:
+- root_path: The root path from which Markdown files will be read.
+
+**Code Description**:
+The `read_md_files` function begins by normalizing and converting the `root_path` to an absolute path. It then iterates through all subdirectories in the `root_path` using `os.walk`. For each subdirectory, it creates a `DirectoryLoader` instance to load Markdown files with the specified glob pattern "./*.md" and using the `UnstructuredMarkdownLoader` loader class. The function then loads the documents using the loader and appends them to the `all_docs` list. Finally, it returns the list of all loaded documents.
+
+The `read_md_files` function is called within the `get_first_summarization` function in the `Summarizator` class to read Markdown files for further processing in the document summarization pipeline.
+
+**Note**:
+- Ensure that the `root_path` parameter is a valid path to the directory containing Markdown files.
+- The function relies on the `DirectoryLoader` class and the `UnstructuredMarkdownLoader` loader class to load Markdown files.
+
+**Output Example**:
+An example output of the `read_md_files` function could be a list of Markdown documents like:
+["document1.md", "document2.md", "document3.md"]
 ***

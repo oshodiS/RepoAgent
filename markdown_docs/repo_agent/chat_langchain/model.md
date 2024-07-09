@@ -1,45 +1,68 @@
 ## ClassDef Model
-**Model**: The function of Model is to provide a foundation for creating chat language chain models by initializing essential attributes and methods.
+**Model**: The function of Model is to provide foundational functionalities for the chat language chain system.
 
 **attributes**:
-- path: The path to the model.
-- llm: An instance of ChatOpenAI for language modeling.
+- path_marksdown: The path to the markdown files.
+- path_hierarchy: The path to the hierarchy.
+- model_name: The name of the model.
+- path_marksdown: The path to the markdown files.
+- llm: An instance of the ChatOpenAI class.
 - docs: Holds the loaded documents.
-- prompt: Represents the chat prompt template.
-- store: A dictionary to store chat session history.
-- vectorstore: Stores vector representations of documents.
+- prompt: A chat prompt template for creating chat interactions.
+- vectorstore: A vector store for storing document embeddings.
 - chain: Represents the chat language chain.
-- hierarchy: Contains the JSON hierarchy obtained from the path_hierarchy.
+- hierarchy: A JSON object representing the hierarchy.
 
 **Code Description**:
-The Model class initializes with the provided path, path_hierarchy, and model_name. It sets up attributes such as path, llm, docs, prompt, store, vectorstore, chain, and hierarchy. The get_prompt method returns the prompt attribute. The set_vectorstore method generates vector representations of documents. The get_session_history method retrieves chat history for a session. The get_chain method returns the chat language chain. The create_chat_prompt method creates a chat prompt template. The create_runnable_chain method sets up a runnable chain for chat interactions. The get_chunk_docs method splits documents into chunks based on size and overlap. 
+The Model class serves as the foundation for the chat language chain system. It initializes with the path_marksdown, path_hierarchy, and model_name parameters. The path_marksdown parameter represents the path to the markdown files, while the path_hierarchy parameter represents the path to the hierarchy. The model_name parameter specifies the name of the model.
 
-The class serves as a base for more specialized models like GeneralModel and SpecificModel, providing essential functionalities for chat language chain operations.
+The class contains various methods to handle different functionalities within the chat language chain system. The __init__ method initializes the path_marksdown, path_hierarchy, and model_name attributes. It also initializes the llm attribute with an instance of the ChatOpenAI class.
 
-**Note**: Ensure to provide necessary parameters when initializing the Model class to enable its functionalities effectively.
+The get_prompt method returns the prompt attribute, which is a chat prompt template for creating chat interactions. The set_vectorstore method sets up the vectorstore attribute by creating document embeddings using the Chroma.from_documents method.
+
+The get_session_history method retrieves the chat history for a specific session. If the session does not exist, it creates a new session and adds it to the Model.store dictionary.
+
+The get_chain method returns the chain attribute, which represents the chat language chain.
+
+The create_chat_prompt method creates a chat prompt template for chat interactions. It takes a system_prompt as input and returns a ChatPromptTemplate object.
+
+The create_runnable_chain method creates a runnable chain for chat interactions. It takes a qa_prompt, history_prompt, and retriever as input and returns a RunnableWithMessageHistory object.
+
+The get_chunk_docs method retrieves document chunks based on the specified chunk_size and chunk_overlap parameters.
+
+The set_store method sets the Model.store dictionary with a specific store and session_id.
+
+The class plays a crucial role in the chat language chain system by providing foundational functionalities such as managing chat history, creating chat prompts, and setting up the chat language chain.
+
+**Note**: When utilizing the Model class, ensure to provide the necessary parameters when initializing the class to enable its functionalities effectively.
 
 **Output Example**:
 ```python
-model = Model("path/to/model", "path/to/hierarchy", "model_name")
-model.set_vectorstore(500, 50, "collection_name")
+model = Model("path/to/markdown", "path/to/hierarchy", "model_name")
+prompt = model.get_prompt()
+model.set_vectorstore(1000, 100, "collection_name")
 session_history = model.get_session_history("session_id")
 chain = model.get_chain()
+model.create_chat_prompt("system_prompt")
+model.create_runnable_chain("qa_prompt", "history_prompt", retriever)
+chunk_docs = model.get_chunk_docs(500, 50)
+model.set_store(store, "session_id")
 ```
-### FunctionDef __init__(self, path, path_hierarchy, model_name)
+### FunctionDef __init__(self, path_marksdown, path_hierarchy, model_name)
 **__init__**: The function of __init__ is to initialize the Model class with specific attributes and objects.
 
 **parameters**:
-- path: A string representing the file path.
-- path_hierarchy: A string representing the file path for JSON data.
-- model_name: A string specifying the model name.
+- path_marksdown: A string representing the path for markdown files.
+- path_hierarchy: A string representing the path for JSON hierarchy data.
+- model_name: A string specifying the name of the model.
 
 **Code Description**:
-The __init__ function initializes the Model class with the provided path, path_hierarchy, and model_name. It sets the 'path' attribute to the given path, initializes the 'llm' attribute using the ChatOpenAI class with a temperature of 0.1 and the specified model_name. The 'docs', 'prompt', 'store', 'vectorstore', 'chain' attributes are initialized to None or empty values. The 'hierarchy' attribute is set by calling the get_json_from_path function from utilities.py with the path_hierarchy parameter.
+The __init__ function initializes the Model class by setting the path for markdown files, creating an instance of the ChatOpenAI class with defined parameters, and initializing attributes for storing documents, prompts, and vectors. It also initializes attributes for chain and hierarchy by calling utility functions.
 
-The get_json_from_path function loads JSON data from the specified path_hierarchy file, which is essential for setting up the hierarchy attribute in the Model class.
+Within the function, the ChatOpenAI instance is created with a temperature of 0.1 and the provided model_name. The loader and docs attributes are not initialized in this function but are commented out for potential future use. The chain attribute is set to None, and the hierarchy attribute is initialized by calling the get_json_from_path function from utilities.py with the path_hierarchy parameter.
 
 **Note**:
-Ensure that the file paths provided for 'path' and 'path_hierarchy' are accurate to prevent any file handling errors during the initialization process.
+Ensure that the path provided for markdown files and JSON hierarchy data is accurate to prevent any file handling errors. The function sets up the necessary components for the Model class to operate effectively.
 ***
 ### FunctionDef get_prompt(self)
 **get_prompt**: The function of get_prompt is to return the prompt stored in the object.
@@ -75,32 +98,21 @@ In the project structure, the set_vectorstore function is called within the Mode
 - Understand the flow of data between the set_vectorstore function and its calling functions to maintain consistency in data processing operations.
 ***
 ### FunctionDef get_session_history(self, session_id)
-**get_session_history**: The function of get_session_history is to retrieve the chat history for a specific session. If the session does not exist, it creates a new one.
+**get_session_history**: The function of get_session_history is to retrieve the chat history for a specific session. If the session does not exist, it creates a new session and returns the chat history.
 
 **parameters**:
 - session_id: A string representing the unique identifier of the session.
 
 **Code Description**:
-The get_session_history function checks if the session_id exists in the store. If not, it creates a new ChatMessageHistory object for that session. Finally, it returns the chat history for the specified session.
+The get_session_history function checks if the provided session_id exists in the Model's store. If the session does not exist, a new ChatMessageHistory object is created and stored in the Model's store with the session_id. Subsequently, the function returns the chat history associated with the session_id.
 
-In the calling object create_runnable_chain within the Model class, the get_session_history function is used as part of creating a RunnableWithMessageHistory object. This object combines various components to form a chain for processing chat messages, where get_session_history is responsible for retrieving the chat history.
+This function plays a crucial role in managing and accessing chat histories within the Model class, ensuring that the conversation context is maintained and updated as needed.
 
-**Note**: 
-- Ensure that the session_id provided is a valid string identifier.
-- The function returns the chat history for the specified session, creating a new session if it does not exist.
+**Note**:
+It is essential to provide a valid session_id when calling this function to retrieve or create the chat history for the corresponding session.
 
 **Output Example**:
-```python
-# Example output when calling get_session_history
-{
-    "session_id": "abc123",
-    "chat_history": [
-        {"message": "Hello", "timestamp": "2022-01-01 12:00:00"},
-        {"message": "How are you?", "timestamp": "2022-01-01 12:05:00"},
-        {"message": "Good, thank you!", "timestamp": "2022-01-01 12:10:00"}
-    ]
-}
-```
+If the function is called with a session_id "session123", the output could be an instance of ChatMessageHistory containing the chat history for the session.
 ***
 ### FunctionDef get_chain(self)
 **get_chain**: The function of get_chain is to return the chain attribute of the object.
@@ -142,34 +154,25 @@ ChatPromptTemplate.from_messages(
 )
 ```
 ***
-### FunctionDef create_runnable_chain(self, contextualize_q_system_prompt, qa_prompt, retriever)
-**create_runnable_chain**: The function of create_runnable_chain is to construct a chain for processing chat messages by combining various components such as prompts and retrievers.
+### FunctionDef create_runnable_chain(self, qa_prompt, history_prompt, retriever)
+**create_runnable_chain**: The function of create_runnable_chain is to construct a runnable chain for processing chat messages by setting up various components such as prompts and retrievers.
 
 **parameters**:
-- contextualize_q_system_prompt: A string representing the system prompt for contextualizing questions.
 - qa_prompt: A string representing the prompt for question-answer interactions.
+- history_prompt: A string representing the prompt for contextualizing chat history.
 - retriever: An object used for retrieving information.
 
 **Code Description**:
-The create_runnable_chain function initializes a chat prompt template for contextualizing questions and question-answer interactions. It then creates a history-aware retriever based on the provided retriever and contextualize_q_system_prompt. Subsequently, it generates prompts for question-answer interactions and constructs a retrieval chain. Finally, it returns a RunnableWithMessageHistory object that encapsulates the chat message processing chain.
+The create_runnable_chain function first creates a contextualized question prompt using the create_chat_prompt method. It then generates a history-aware retriever by combining the language model, retriever, and contextualized question prompt. Subsequently, it creates prompts for question-answer interactions and constructs a retrieval chain. Finally, the function returns a RunnableWithMessageHistory object containing the constructed chain along with specific message keys for input, chat history, and answer.
 
-This function utilizes the create_chat_prompt function to generate chat prompts and the get_session_history function to retrieve chat history within the RunnableWithMessageHistory object. It plays a crucial role in setting up the message flow and structure of the conversation chain for processing chat messages effectively.
+This function is essential for establishing a structured flow within the chat processing chain, ensuring effective handling of chat messages. It is called within the Model class to set up the necessary components for processing chat interactions seamlessly.
 
 **Note**:
-- Ensure valid system prompts are provided for contextualizing questions and question-answer interactions.
-- The function combines various components to create a chain for processing chat messages efficiently.
+- Ensure valid prompts and retriever objects are provided to create a functional runnable chain.
+- The function encapsulates the logic for creating a chain of components required for processing chat messages efficiently.
 
 **Output Example**:
-```python
-# Example output when calling create_runnable_chain
-RunnableWithMessageHistory(
-    retrieval_chain,
-    session_history,
-    input_messages_key="input",
-    history_messages_key="chat_history",
-    output_messages_key="answer",
-)
-```
+A possible output of the create_runnable_chain function could be a RunnableWithMessageHistory object containing the configured chat message processing chain with designated message keys.
 ***
 ### FunctionDef get_chunk_docs(self, chunk_size, chunk_overlap)
 **get_chunk_docs**: The function of get_chunk_docs is to split a list of documents into chunks of text with specified size and overlap, utilizing the get_chunk_with_source function from utilities.py.
@@ -195,4 +198,17 @@ In the project, the get_chunk_docs function is called within the show_chunk func
     ...
 ]
 ```
+***
+### FunctionDef set_store(store, session_id)
+**set_store**: The function of set_store is to assign a store to a specific session ID in the Model.
+
+**parameters**:
+- store: Represents the store that will be assigned to the session ID.
+- session_id: Represents the unique identifier of the session where the store will be stored.
+
+**Code Description**:
+The set_store function takes two parameters, store, and session_id. It then assigns the provided store to the Model under the specific session_id key. This allows for easy retrieval of the store based on the associated session ID.
+
+**Note**:
+It is important to ensure that the session_id provided is unique to avoid overwriting existing stores associated with other session IDs.
 ***

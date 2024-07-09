@@ -9,7 +9,7 @@ import os
 class SpecificModel(Model):
     def __init__(self, path, path_hierarchy, model_name, chunk_size, chunk_overlap):
         super().__init__(path, path_hierarchy, model_name)
-        self.load_docs()
+        self.docs = utilities.load_docs(path)
         super().set_vectorstore(chunk_size,chunk_overlap, "specific-model")
         
         self.metadata_field_info = [
@@ -54,16 +54,6 @@ class SpecificModel(Model):
         # )
         
         # self.chain = specific_chain
-
-    def load_docs(self):
-        all_docs = []
-        abs = os.path.normpath(os.path.abspath(self.path_marksdown))  # Normalize and convert root_path to an absolute path
-
-        for subdir, _, _ in os.walk(abs):
-            loader = DirectoryLoader(os.path.join(abs, subdir), glob="./*.md", show_progress=True, loader_cls=UnstructuredMarkdownLoader)    
-            docs = loader.load()
-            all_docs.extend(docs)
-        self.docs = all_docs
 
     def get_docs(self):
         return self.docs

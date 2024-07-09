@@ -1,123 +1,114 @@
 ## ClassDef TestChangeDetector
 **TestChangeDetector**: The function of TestChangeDetector is to perform unit tests for the ChangeDetector class methods.
 
-**attributes**:
-- test_repo_path: Path to the test repository.
-- repo: Initialized Git repository for testing.
+**attributes**: 
+· test_repo_path: Path to the test repository.
+· repo: Initialized Git repository for testing.
 
-**Code Description**:
-The TestChangeDetector class contains methods to test the functionality of the ChangeDetector class. 
-1. The setUpClass method sets up the test repository, initializes a Git repository, configures Git user information, creates test files, and simulates Git operations by adding and committing files.
-2. The test_get_staged_pys method creates a new Python file, stages it, uses ChangeDetector to check staged Python files, and asserts the presence of the new file in the staged files list.
-3. The test_get_unstaged_mds method modifies a Markdown file without staging it, uses ChangeDetector to get unstaged Markdown files, and asserts the presence of the modified file in the unstaged files list.
-4. The test_add_unstaged_mds method ensures there is an unstaged Markdown file, adds the unstaged file using ChangeDetector, checks if the file is staged, and asserts that there are no remaining unstaged Markdown files after the add operation.
-5. The tearDownClass method cleans up the test repository by closing the Git repository and removing the test repository directory.
+**Code Description**: 
+The TestChangeDetector class is a unit test class that tests the functionality of the ChangeDetector class methods. In the setUpClass method, a test repository is created with some initial files, Git repository is initialized, and user information is configured. The test_get_staged_pys method tests the get_staged_pys method of ChangeDetector by creating a new Python file, staging it, and checking if it is in the staged files list. The test_get_unstaged_mds method tests the get_to_be_staged_files method of ChangeDetector by modifying a Markdown file without staging it and checking if it appears in the unstaged files list. The test_add_unstaged_mds method tests the add_unstaged_files method of ChangeDetector by ensuring there is an unstaged Markdown file, adding it, and verifying that there are no remaining unstaged files after the operation. The tearDownClass method cleans up the test repository after all tests are executed.
 
-**Note**:
-- Ensure that the test repository path is correctly set up before running the test methods.
-- The test methods rely on the ChangeDetector class for testing Git operations, so ensure the ChangeDetector class is functioning correctly before running these tests.
+**Note**: 
+- This class is dependent on the ChangeDetector class for testing its methods.
+- Ensure that the test repository path is correctly set up before running the tests.
 ### FunctionDef setUpClass(cls)
-**setUpClass**: The function of setUpClass is to set up a test environment by creating a test repository, initializing a Git repository, configuring Git user information, creating test files, and simulating Git operations to add and commit files.
+**setUpClass**: The function of setUpClass is to set up a test environment by creating a test repository, initializing a Git repository, configuring Git user information, creating test files, and simulating Git operations.
 
 **parameters**:
-- cls: The class object representing the test case class.
+- cls: Represents the class itself.
 
 **Code Description**:
-The setUpClass function first defines the path for the test repository by joining the directory path with 'test_repo'. It then checks if the test repository folder exists and creates it if it does not. Next, it initializes a Git repository in the test repository path. The function proceeds to configure the Git user information with a specified email and name. Following this, it creates two test files, 'test_file.py' and 'test_file.md', with specific content in the test repository. Finally, it simulates Git operations by adding all files and committing them with an initial commit message.
+The setUpClass function first defines the path for the test repository by joining the directory path with 'test_repo'. It then checks if the test repository folder does not exist, and if not, creates it. Next, it initializes a Git repository in the test repository path. Following this, it configures the Git user email and name for the repository. 
+
+After that, the function creates two test files, 'test_file.py' and 'test_file.md', with specific content in the test repository. Finally, it simulates Git operations by adding all files and committing them with the message 'Initial commit'.
 
 **Note**:
-- This function is typically used in test classes to set up a test environment before running test cases.
-- Ensure that the necessary modules (os, Repo) are imported before using this function.
+- This function is typically used in test classes to set up a specific environment before running test cases.
 ***
 ### FunctionDef test_get_staged_pys(self)
-**test_get_staged_pys**: The purpose of the test_get_staged_pys function is to test the functionality of the get_staged_pys method in the ChangeDetector class. It verifies whether the method correctly retrieves the added Python files in the repository that have been staged.
+**test_get_staged_pys**: The function of test_get_staged_pys is to retrieve added Python files in the repository that have been staged.
 
-**Parameters**:
-- self: The instance of the TestChangeDetector class.
+**parameters**: 
+- No external parameters are required for this function.
 
-**Code Description**:
-The test_get_staged_pys function is a unit test that ensures the get_staged_pys method in the ChangeDetector class functions as expected. It follows a specific workflow to create a new Python file, stage it, and then checks if the file is correctly identified as staged.
+**Code Description**: 
+The test_get_staged_pys function is a test case within the TestChangeDetector class. It is responsible for testing the functionality of identifying staged Python files in the repository. 
 
-First, the function creates a new Python file named 'new_test_file.py' in the test repository path. It writes a simple print statement to the file. The file is then added to the staging area using the git add command.
+The function begins by creating a new Python file and staging it in the repository. It then initializes a ChangeDetector object with the repository path. The ChangeDetector object is responsible for handling file differences and change detection within the repository. 
 
-Next, an instance of the ChangeDetector class is created, passing the test repository path as a parameter. This class is responsible for handling file differences and change detection in the repository.
+Next, the function calls the get_staged_pys method of the ChangeDetector object to retrieve the added Python files that have been staged. This method utilizes the GitPython library to compare the staging area (index) with the original HEAD commit. It detects the differences and identifies the added or modified Python files that end with the ".py" extension. The method returns a dictionary where the keys represent the file paths, and the values indicate whether the file is newly created or not based on the change type.
 
-The get_staged_pys method is called on the ChangeDetector instance to retrieve the added Python files that have been staged. The method utilizes the GitPython library to compare the staging area (index) with the original HEAD commit. It identifies the newly created files by checking the change type in the GitPython diff object.
+The function then performs an assertion to verify that the newly created file is present in the list of staged files. It checks if the file name 'new_test_file.py' exists in the list of file names extracted from the staged_files dictionary.
 
-The function then asserts that the 'new_test_file.py' is present in the dictionary of staged files returned by the get_staged_pys method. It compares the file paths in the dictionary with the basename of the staged files to account for any differences in the directory structure.
+Finally, the function prints the list of staged Python files for verification purposes.
 
-Finally, the function prints the staged Python files to provide visibility into the test results.
-
-**Note**:
-- The test_get_staged_pys function is part of the TestChangeDetector class and serves as a unit test for the get_staged_pys method in the ChangeDetector class.
-- It is important to ensure that the test repository path is correctly set before running this test.
-- The test repository should be in a clean state before running this test to avoid interference from other changes.
-- The get_staged_pys method relies on the GitPython library to interact with the Git repository.
-- The test_get_staged_pys function can be used as a reference for testing the get_staged_pys method in other scenarios.
-
-**Output Example**:
-```
-test_get_staged_pys: Staged Python files: {'new_test_file.py': True}
-```
-
-Please note that the provided documentation is based on the code analysis and may not cover all possible scenarios or edge cases. It is recommended to review and test the code thoroughly before using it in a production environment.
+**Note**: 
+It is important to note that the test_get_staged_pys function is part of a test suite and is specifically designed to test the functionality of the get_staged_pys method. It is not intended for production use. The function relies on the ChangeDetector class and the GitPython library to perform the necessary operations.
 ***
 ### FunctionDef test_get_unstaged_mds(self)
 **test_get_unstaged_mds**: The function of test_get_unstaged_mds is to test the functionality of retrieving unstaged Markdown files in a Git repository.
 
 **parameters**:
-- self: The reference to the current instance of the TestChangeDetector class.
+- self: The instance of the TestChangeDetector class.
 
 **Code Description**:
-The `test_get_unstaged_mds` function is a unit test that verifies the behavior of the `get_to_be_staged_files` method in the `ChangeDetector` class. It ensures that the method correctly retrieves the unstaged Markdown files in the repository.
+The `test_get_unstaged_mds` function is a unit test that verifies the behavior of the `get_to_be_staged_files` method in the `ChangeDetector` class. It first modifies a Markdown file by appending additional content to it without staging the changes. Then, it creates an instance of the `ChangeDetector` class and calls the `get_to_be_staged_files` method to retrieve the unstaged files in the repository. The function asserts that the modified file is present in the list of unstaged files.
 
-The function first modifies a Markdown file by appending additional content to it. It then creates an instance of the `ChangeDetector` class, passing the repository path as an argument. The `get_to_be_staged_files` method is called to retrieve the unstaged files in the repository.
-
-The function asserts that the modified file is present in the list of unstaged files returned by the `get_to_be_staged_files` method. It also prints the list of unstaged Markdown files for reference.
-
-This function is called by the `test_add_unstaged_mds` method in the same class to ensure that there is at least one unstaged Markdown file before testing the `add_unstaged_files` method.
+The purpose of this test is to ensure that the `get_to_be_staged_files` method correctly identifies the unstaged Markdown files in the repository. It also serves as a validation for the `add_unstaged_files` method, which is called in a subsequent test.
 
 **Note**:
-- The function relies on the `ChangeDetector` class and its `get_to_be_staged_files` method to retrieve the unstaged Markdown files.
-- It performs assertions to verify the correctness of the retrieved files.
-- The printed list of unstaged Markdown files serves as a visual confirmation of the retrieved files.
+- This test assumes that the Git repository has been properly set up and that the necessary dependencies are installed.
+- The test modifies a specific Markdown file and checks if it is correctly identified as an unstaged file.
+- The test does not cover all possible scenarios and edge cases. Further testing is recommended to ensure the accuracy and reliability of the `get_to_be_staged_files` method.
 
 **Output Example**:
-Unstaged Markdown files: ['test_file.md']
+```
+test_get_unstaged_mds: Unstaged Markdown files: ['test_file.md']
+```
 
+This function is called by the following object(s):
+- tests\test_change_detector.py/TestChangeDetector/test_add_unstaged_mds
 
+This function calls the following object(s):
+- repo_agent\change_detector.py/ChangeDetector/get_to_be_staged_files
 ***
 ### FunctionDef test_add_unstaged_mds(self)
 **test_add_unstaged_mds**: The function of test_add_unstaged_mds is to test the functionality of adding unstaged Markdown files to the staging area in a Git repository.
 
 **parameters**:
-- self: The reference to the current instance of the TestChangeDetector class.
+- self: The instance of the TestChangeDetector class.
 
 **Code Description**:
-The `test_add_unstaged_mds` function is a unit test that verifies the behavior of the `add_unstaged_files` method in the `ChangeDetector` class. It ensures that the method correctly adds unstaged Markdown files to the staging area.
+The `test_add_unstaged_mds` function is a unit test that verifies the behavior of the `add_unstaged_files` method in the `ChangeDetector` class. It first calls the `test_get_unstaged_mds` method to ensure that there is at least one unstaged Markdown file in the repository. Then, it creates an instance of the `ChangeDetector` class and calls the `add_unstaged_files` method to add the unstaged files to the staging area. The function then retrieves the remaining unstaged Markdown files using the `get_to_be_staged_files` method and asserts that the length of the list is 0, indicating that all unstaged files have been successfully added to the staging area.
 
-The function first calls the `test_get_unstaged_mds` method to ensure that there is at least one unstaged Markdown file in the repository. It then creates an instance of the `ChangeDetector` class, passing the repository path as an argument. The `add_unstaged_files` method is called to add the unstaged files to the staging area.
-
-The function retrieves the list of files that are still unstaged after the addition. It asserts that the length of this list is 0, indicating that all unstaged Markdown files have been successfully added to the staging area.
-
-Finally, the function prints the number of remaining unstaged Markdown files after the add operation for reference.
-
-This function is called by the test runner to verify the correctness of the `add_unstaged_files` method and ensure that unstaged Markdown files are properly handled.
+The purpose of this test is to ensure that the `add_unstaged_files` method correctly identifies and adds the unstaged Markdown files to the staging area. It also serves as a validation for the `get_to_be_staged_files` method, which is called to retrieve the remaining unstaged files after the addition.
 
 **Note**:
-- The function relies on the `ChangeDetector` class and its `add_unstaged_files` method to add unstaged Markdown files to the staging area.
-- It performs assertions to verify the correctness of the added files.
-- The printed number of remaining unstaged Markdown files serves as a visual confirmation of the successful addition to the staging area.
+- This test assumes that the Git repository has been properly set up and that the necessary dependencies are installed.
+- The test relies on the `test_get_unstaged_mds` method to ensure the presence of unstaged Markdown files.
+- The test does not cover all possible scenarios and edge cases. Further testing is recommended to ensure the accuracy and reliability of the `add_unstaged_files` method.
+
+**Output Example**:
+```
+test_add_unstaged_mds: Number of remaining unstaged Markdown files after add: 0
+```
+
+This function is called by the following object(s):
+- None
+
+This function calls the following object(s):
+- repo_agent\change_detector.py/ChangeDetector/test_get_unstaged_mds
+- repo_agent\change_detector.py/ChangeDetector/add_unstaged_files
 ***
 ### FunctionDef tearDownClass(cls)
 **tearDownClass**: The function of tearDownClass is to clean up the test repository by closing the repository and removing the test repository path.
 
 **parameters**:
-- cls: Represents the class instance.
+- cls: Represents the class itself, allowing access to class attributes and methods.
 
 **Code Description**:
-The tearDownClass function is a class method that is responsible for cleaning up the test repository. It first closes the repository using the `close()` method on the `cls.repo` object. Then, it removes the test repository path by executing a system command using `os.system('rm -rf ' + cls.test_repo_path)`.
+The tearDownClass function is a class method that is responsible for cleaning up the test repository after all tests have been executed. In this function, the repository is closed using the `close()` method, and then the test repository path is removed using the `os.system('rm -rf ' + cls.test_repo_path)` command. This ensures that any temporary files or resources created during the testing process are properly cleaned up.
 
 **Note**:
-It is important to ensure that the `cls.repo` attribute is properly initialized before calling the tearDownClass function to avoid any potential errors. Additionally, exercise caution when using system commands like `os.system('rm -rf')` as they can have significant consequences if not used correctly.
+It is important to ensure that the `tearDownClass` function is properly implemented to avoid any resource leaks or unwanted side effects in subsequent test runs.
 ***

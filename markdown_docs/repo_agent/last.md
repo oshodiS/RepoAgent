@@ -5,10 +5,10 @@
 - lst: A list from which the last element needs to be retrieved.
 
 **Code Description**:
-The function takes a list as input and returns the last element of the list by using the index -1, which represents the last element in Python lists.
+The function takes a list as input and returns the last element of the list by accessing it using the index -1.
 
 **Note**:
-Make sure to pass a non-empty list as an argument to the function to avoid IndexError.
+Ensure that the input list is not empty to avoid IndexError.
 
 **Output Example**:
-If the input list is [1, 2, 3, 4], the function will return 4.
+If lst = [1, 2, 3, 4], the function will return 4.

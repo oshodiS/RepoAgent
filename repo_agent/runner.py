@@ -9,7 +9,8 @@ from functools import partial
 from repo_agent.chat_langchain import utilities
 from colorama import Fore, Style
 from tqdm import tqdm
-from repo_agent.summarization import Summarizator
+#from repo_agent.summarization import Summarizator
+from repo_agent.parallel_summarization import ParallelSummarizator
 from repo_agent.change_detector import ChangeDetector
 from repo_agent.chat_engine import ChatEngine
 from repo_agent.doc_meta_info import DocItem, DocItemStatus, MetaInfo, need_to_generate
@@ -49,7 +50,7 @@ class Runner:
         )
         self.runner_lock = threading.Lock()
         markdown_folder = setting.project.target_repo / setting.project.markdown_docs_name
-        self.summarizator = Summarizator(markdown_folder, setting.chat_completion.model)
+        self.summarizator = ParallelSummarizator(markdown_folder, setting.chat_completion.model)
         
 
     def get_all_pys(self, directory):
