@@ -1,44 +1,39 @@
 ## ClassDef TestChromaManager
-**TestChromaManager**: The function of TestChromaManager is to test the functionality of the ChromaManager class methods.
+The function of TestChromaManager is to test the functionality of the ChromaManager class, which manages interactions with a ChromaDB client and handles vector storage operations.
 
 **attributes**:
-- self.mock_client: Mock object representing the ChromaDB Client.
-- self.mock_collection: Mock object representing the collection in ChromaDB.
-- self.chroma_manager: Instance of ChromaManager class with dummy API key and base.
+- mock_client: A mock object representing the ChromaDB client.
+- mock_collection: A mock object representing a collection within the ChromaDB client.
+- chroma_manager: An instance of the ChromaManager class with specified API key and base URL.
 
 **Code Description**:
-The TestChromaManager class is a unit test class that tests the functionality of the ChromaManager class methods. In the setUp method, a mock ChromaDB Client and collection are created. The ChromaManager instance is initialized with dummy API key and base. 
-
-The test_init method checks if the ChromaManager object is initialized correctly by verifying the existence of the chroma_collection attribute.
-
-The test_init_chroma_collection method tests the initialization of the chroma collection by calling the init_chroma_collection method. It asserts that the create_collection and get_collection methods of the mock client are called once each, and ensures that the chroma_collection attribute is not None after initialization.
-
-The test_create_vector_store method tests the create_vector_store method of ChromaManager by mocking an embedding function and verifying the expected behavior. It creates mock embeddings, sets up mock contents, calls the create_vector_store method, and asserts that the embedding function is called with the contents, and the collection's add method is called with the expected parameters.
+The TestChromaManager class contains setup and test methods to verify the initialization and functionality of the ChromaManager class. In the setUp method, a mock ChromaDB client and collection are created, and the ChromaManager instance is initialized with dummy API key and base URL. The test_init method checks if the chroma_collection attribute of the ChromaManager instance is not None after initialization. The test_init_chroma_collection method tests the initialization of the chroma collection by calling the init_chroma_collection method and asserting the creation and retrieval of the collection. The test_create_vector_store method tests the create_vector_store method by mocking an embedding function, generating mock embeddings, and verifying the addition of documents and embeddings to the collection.
 
 **Note**:
 - The setUp method is used to set up the necessary mock objects and instances before each test method is executed.
-- The patch decorator is used to mock external dependencies such as ChromaDB Client and embedding functions for isolated testing.
+- The patch decorator is used to mock external dependencies such as the ChromaDB client and embedding functions for isolated testing.
 
 **Output Example**:
 Mock up a possible appearance of the code's return value:
-- Assertion errors if the expected conditions are not met during testing.
-- Successful test runs with all assertions passing.
+- Assertion: self.chroma_manager.chroma_collection is not None
+- Assertion: mock_client.create_collection and mock_client.get_collection are called once each
+- Assertion: mock_embedding_function and mock_collection.add are called with specified arguments
 ### FunctionDef setUp(self, MockClient)
-**setUp**: The function of setUp is to initialize a Mock for the ChromaDB Client, set up necessary mock attributes, and create an instance of the ChromaManager class.
+**setUp**: The function of setUp is to initialize the MockClient for the ChromaDB Client and create necessary mock objects for testing purposes.
 
 **parameters**:
 - self: The instance of the class.
-- MockClient: A mock object representing the ChromaDB Client.
+- MockClient: The mock client object used for testing.
 
 **Code Description**:
-The setUp function initializes a mock client by setting up mock attributes such as mock_client, mock_collection, and ChromaManager instance. It creates a mock client using the MockClient object, sets up the mock collection, and configures the mock client to return the mock collection when methods like create_collection and get_collection are called. Additionally, it instantiates a ChromaManager object with dummy API key and base URL.
+The setUp function initializes the MockClient for the ChromaDB Client by creating mock objects. It sets up the mock client, mock collection, and defines the behavior of mock client methods such as create_collection and get_collection. Additionally, it creates an instance of the ChromaManager class with dummy API key and base URL for further testing.
 
-The ChromaManager class is responsible for managing collections in ChromaDB, including initializing collections and creating vector stores. It interacts with ChromaDB to handle data processing tasks efficiently. The setUp function ensures that the necessary mock setup is in place for testing the functionality related to ChromaDB interactions.
+The ChromaManager class manages collections in ChromaDB, handling the initialization and creation of collections. It interacts with the ChromaDB client to check for existing collections, create new collections if needed, and store vector data efficiently. The setUp function plays a crucial role in setting up the necessary environment for testing the functionality of ChromaManager.
 
 **Note**:
-Developers can utilize the setUp function in testing scenarios to prepare the environment for testing ChromaDB interactions without actually making calls to the real ChromaDB. It helps in isolating the testing environment and ensuring the functionality of the code related to ChromaDB interactions.
+Developers can utilize the setUp function in testing scenarios to prepare the environment for testing ChromaManager functionalities effectively.
 
-**Output Example**: 
+**Output Example**:
 N/A
 ***
 ### FunctionDef test_init(self)
@@ -46,42 +41,40 @@ N/A
 
 **parameters**: This Function does not take any parameters.
 
-**Code Description**: In this Function, the code checks if the chroma_collection attribute of the chroma_manager object is not None. This is done to ensure that the object is initialized properly.
+**Code Description**: In this Function, the code checks if the chroma_collection attribute of the chroma_manager object is not None. This is done to ensure that the object is initialized properly and the chroma_collection attribute is set during initialization.
 
-**Note**: It is important to run this test to verify that the initialization of the object is successful and the chroma_collection attribute is properly set during the object creation process.
+**Note**: It is important to run this test to verify that the initialization of the object is successful and that the chroma_collection attribute is properly set before proceeding with other operations that depend on it.
 ***
 ### FunctionDef test_init_chroma_collection(self)
-**test_init_chroma_collection**: The function of test_init_chroma_collection is to test the initialization of the Chroma collection by verifying the creation and loading processes.
+**test_init_chroma_collection**: The function of test_init_chroma_collection is to test the initialization process of the Chroma collection.
 
-**parameters**:
+**parameters**: 
 - No external parameters are passed to this function.
 
-**Code Description**:
-The test_init_chroma_collection function validates the initialization of the Chroma collection by invoking the init_chroma_collection method from the ChromaManager class. It then asserts that the creation and retrieval of the collection are called once each using the mock client. Furthermore, the function ensures that the chroma_collection attribute of the ChromaManager object is not None after initialization.
+**Code Description**: 
+The test_init_chroma_collection function tests the initialization of the Chroma collection by calling the init_chroma_collection method of the ChromaManager class. It then asserts that the create_collection and get_collection methods of the mock client are called once each. Additionally, it checks if the chroma_collection attribute of the ChromaManager object is not None after initialization.
 
-The init_chroma_collection method is responsible for initializing the Chroma collection by either creating a new collection named "test" or loading an existing one if present. This function utilizes a Chroma client to manage the collection operations and handles unique constraint errors that may occur during the creation process.
+This test function ensures that the initialization process of the Chroma collection is functioning correctly by verifying the expected method calls and the existence of the chroma_collection attribute.
 
-The test_init_chroma_collection method plays a crucial role in verifying the proper functioning of the ChromaManager's initialization process, ensuring that the Chroma collection is set up correctly for subsequent operations.
-
-**Note**:
-- The test_init_chroma_collection function is an essential part of the testing suite for the ChromaManager class, validating the initialization logic of the Chroma collection.
-- It utilizes mock clients to simulate the creation and retrieval of the collection, ensuring the expected behavior of the ChromaManager object.
+**Note**: 
+- This test function is essential for validating the proper initialization of the Chroma collection within the ChromaManager class.
+- It helps maintain the integrity and functionality of the ChromaManager's init_chroma_collection method by ensuring it behaves as expected during initialization.
 ***
 ### FunctionDef test_create_vector_store(self, MockEmbeddingFunction)
-**test_create_vector_store**: The function of test_create_vector_store is to test the create_vector_store method by mocking the embedding function and verifying the expected calls made during the function execution.
+**test_create_vector_store**: The function of test_create_vector_store is to test the functionality of creating a vector store by mocking an embedding function and verifying the addition of documents to the Chroma collection with the expected ids and embeddings.
 
 **parameters**:
-- self: The instance of the test class.
-- MockEmbeddingFunction: Mock object representing the embedding function.
-  
-**Code Description**:
-The test_create_vector_store function sets up the mock embedding function and defines mock embeddings. It then calls the create_vector_store method of the ChromaManager instance and asserts that the mock embedding function is called with the provided Markdown contents. Additionally, it ensures that the add method of the mock collection is called with the expected parameters.
+- self: The reference to the current instance of the class.
+- MockEmbeddingFunction: A mock object representing the embedding function.
 
-In the context of the project, this test function validates the functionality of the create_vector_store method in the ChromaManager class by simulating the behavior of the embedding function and collection's add method. By doing so, it confirms that the data processing and storage operations within the create_vector_store function are performed correctly.
+**Code Description**:
+The test_create_vector_store function initializes a mock embedding function and sets mock embeddings. It then creates a list of Markdown contents, calls the create_vector_store method of ChromaManager, and asserts that the mock embedding function is called with the Markdown contents. Furthermore, it ensures that the mock collection's add method is called with the expected ids, documents, and embeddings.
+
+This function is a unit test designed to validate the behavior of the create_vector_store method in the ChromaManager class. By using mock objects, it isolates the testing scope to focus on the specific functionality of adding documents to the Chroma collection.
 
 **Note**:
-- This test function is essential for verifying the proper execution of the create_vector_store method in handling Markdown content and embeddings.
-- Ensure that the assertions in the test function align with the expected behavior of the create_vector_store method.
+- Ensure that the mock objects and assertions are correctly set up to test the create_vector_store method.
+- Verify that the expected method calls and parameters match the intended functionality of adding documents to the Chroma collection.
 
 **Output Example**: N/A
 ***

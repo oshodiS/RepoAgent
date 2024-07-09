@@ -597,6 +597,7 @@ class Runner:
         new_obj = list(current_obj - previous_obj)
         del_obj = list(previous_obj - current_obj)
         return new_obj, del_obj
+    
 
 
 if __name__ == "__main__":

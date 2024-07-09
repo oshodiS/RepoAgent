@@ -8,6 +8,9 @@ from colorama import Fore, Style
 from repo_agent.file_handler import FileHandler
 from repo_agent.settings import setting
 
+def observe_updating():
+    print("AGAIN")
+    print("The documentation added it ")
 
 class ChangeDetector:
     """
