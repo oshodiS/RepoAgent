@@ -7,6 +7,7 @@ from langchain_core.prompts.prompt import PromptTemplate
 from langchain.chains.llm import LLMChain
 from langchain.chains.combine_documents.stuff import StuffDocumentsChain
 from langchain.chains import MapReduceDocumentsChain, ReduceDocumentsChain
+from langchain.chains.summarize import load_summarize_chain
 
 class Summarizator:
     def __init__(self, path, model_name):
@@ -29,7 +30,7 @@ class Summarizator:
         reduce_template = """The following is a set of summaries: {docs}
         Please distill these summaries into a final, consolidated summary of the overall contents. Ensure the final summary captures the main points and key details from each document.
         Helpful Answer:
-        
+    
         The standard format is as follows:
 
         # title: 
@@ -60,7 +61,7 @@ class Summarizator:
             token_max=4000,
         )
 
-        map_reduce_chain = MapReduceDocumentsChain(
+        self.map_reduce_chain = MapReduceDocumentsChain(
                             # Map chain
                             llm_chain=map_chain,
                             # Reduce chain
@@ -70,7 +71,13 @@ class Summarizator:
                             # Return the results of the map steps in the output
                             return_intermediate_steps=False,
                         )
-        self.map_reduce_chain = map_reduce_chain
+        
+
+
+
+        self.map_reduce_chain = load_summarize_chain(self.llm, chain_type="refine")
+
+        #self.map_reduce_chain = map_reduce_chain
     
     def split_documents(self, doc, chunk_size, chunk_overlap):
         """ Split a document into chunks of text."""
@@ -94,14 +101,6 @@ class Summarizator:
     
         return splits
     
-    def read_md_files(slef, root_path):
-        all_docs = []
-        for subdir, _, _ in os.walk(root_path):
-            loader = DirectoryLoader(os.path.join(root_path, subdir), glob="./*.md", show_progress=True, loader_cls=UnstructuredMarkdownLoader)    
-            docs = loader.load()
-            all_docs.extend(docs)
-        return all_docs
-
 
 
     def get_first_summarization(self):
@@ -111,7 +110,7 @@ class Summarizator:
         if (len(self.docs) != 0):
             all_splits = []
             for doc in self.docs:
-                    splits = self.split_documents(doc, 500, 0)
+                    splits = self.split_documents(doc, 10000, 0)
                     for doc_split in splits:
                         filename = os.path.basename(list(doc.metadata.values())[0])
                         doc_split.metadata = {'source':filename}        
@@ -120,4 +119,12 @@ class Summarizator:
             self.get_map_reduce_chain()
             summary = self.map_reduce_chain.invoke(self.all_splits)["output_text"]
         return summary
-         
+        
+    def read_md_files(root_path):
+        all_docs = []
+        root_path = os.path.normpath(os.path.abspath(root_path))  # Normalize and convert root_path to an absolute path
+        for subdir, _, _ in os.walk(root_path):
+            loader = DirectoryLoader(os.path.join(root_path, subdir), glob="./*.md", show_progress=True, loader_cls=UnstructuredMarkdownLoader)    
+            docs = loader.load()
+            all_docs.extend(docs)
+        return all_docs

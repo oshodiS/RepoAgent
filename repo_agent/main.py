@@ -310,7 +310,7 @@ def chat_with_repo(chunk_size, chunk_overlap):
 
     if markdown_folder.exists():
         logger.info("Chat with Repo")
-        chat = ChatRepo(markdown_folder, hierarchy_file, setting.chat_completion.model, chunk_size=chunk_size, chunk_overlap=chunk_overlap)
+        chat = ChatRepo(setting.project.target_repo, markdown_folder, hierarchy_file, setting.chat_completion.model, chunk_size=chunk_size, chunk_overlap=chunk_overlap)
         chat.start_chat()
 cli.add_command(chat_with_repo)
 

@@ -1,5 +1,5 @@
 
-import os, json
+import os, json,re
 from langchain_text_splitters import MarkdownHeaderTextSplitter, RecursiveCharacterTextSplitter
 
 def split_documents(doc, chunk_size=250, chunk_overlap=30):
@@ -55,5 +55,23 @@ def get_contextualize_q_system_prompt():
             "Given a chat history and the latest user question which might reference context in the chat history, "
             "formulate a standalone question which can be understood without the chat history. "
             "Do NOT answer the question, just reformulate it if needed and otherwise return it as is."
+            "Do NOT add requests for additional information or clarification if not in the original question."
+            "keep it as a question"
         )
+def get_dont_contextualize_system_prompt():
+    return (
+            "Repeat the question as it is. Do NOT add requests for additional information or clarification if not in the original question."
+            "Do NOT answer the question,"
+            
+        )
+
+def get_readme_path(root_path):
+    """Reads the README.md file in the root of the repository."""
+    readme_files = []
+    pattern = re.compile(r'^(read[_]?me)([_]?(md|txt))$', re.IGNORECASE)
+    for root, dirs, files in os.walk(root_path):
+        for file in files:
+            if pattern.match(file):
+                return os.path.join(root, file)
+    return None
 

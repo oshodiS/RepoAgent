@@ -20,7 +20,7 @@ class ClassificationModel(Model):
         self.history = []
         self.methods = self.get_methods_from_hierarchy()
         self.__set_contextualize_prompt()
-        self.__set_classification_prompt()
+        self.__set_classification_chain()
 
     def get_methods_from_hierarchy(self):
         methods = []
@@ -30,17 +30,17 @@ class ClassificationModel(Model):
         return methods
     
     def get_classification(self,question):
-        classification = self.classify_trough_name(question)
+        classification = self.classify_trought_name(question)
         # if the user is asking about a method then the question is specific 
-        if self.classify_trough_name(question) == '\n specific':
+        if self.classify_trought_name(question) == '\n specific':
             print("name-",classification)
-            return classification
+            return classification, question
         
         refactored_question = self.__generate_standalone_question(question)
-        response = self.prompt.format(input=refactored_question).strip()
-        classification = response.split('\n')[0]
-        print(classification)
-        return classification
+        
+        response = self.chain.run(text=refactored_question).strip()
+        print(response)
+        return response, refactored_question
 
     
     def classify_trought_name(self,question):
@@ -58,78 +58,54 @@ class ClassificationModel(Model):
         ]
         )
     
-    def __add_to_history(self, user_input, system_output, max_history_length=3):
-        if len(self.history) >= 2*max_history_length:
+    def __add_to_history(self, session_id: str, user_input, system_output, max_history_length=3):
+        history = Model.store[session_id]
+    
+        if len(history) >= 2*max_history_length:
             self.history.pop(0)
         self.history.append({"role": "user", "content": user_input})
         self.history.append({"role": "system", "content": system_output})
+
     
+
+
+
     def __generate_standalone_question(self, user_input):
         chain = LLMChain(llm=self.llm, prompt=self.contextualize_q_prompt)
-        standalone_question = chain.run(chat_history = self.history, input=user_input)
-        self.__add_to_history(user_input, standalone_question)
+        converted_history = convert_history(super().get_session_history("hist123"))
+        standalone_question = chain.run(chat_history = converted_history, input=user_input)
         return standalone_question
 
-    def __set_classification_prompt(self):
-        examples = [    
-                        {
-                            "question": "Explain me what the repository is about",
-                            "answer": """general""",
-                        },
-                        {
-                            "question": "What is this program doing?",
-                            "answer": """general""",
-                        },
-                        {
-                            "question": "How does the project work?",
-                            "answer": """general""",
-                        },
-                        {
-                            "question": "which parameter should be passed to the function?",
-                            "answer": """specific""",
-                        },
-                        {
-                            "question": "what does the function X returns?",
-                            "answer": """specific""",
-                        },
-                        {
-                            "question": "show me how to use function X",
-                            "answer": """specific""",
-                        },
-                         {
-                            "question": "explain the  function X",
-                            "answer": """specific""",
-                        },
-                         {
-                            "question": "explain the class X",
-                            "answer": """specific""",
-                        },
-                        {
-                            "question": "how the method X works?",
-                            "answer": """specific""",
-                        },
-                         {
-                            "question": "how the class X works?",
-                            "answer": """specific""",
-                        },
-                        {
-                            "question": """explain file X.md""",
-                            "answer": """specific""",
-                        },
-                    ]
-        example_prompt = PromptTemplate(
-                            input_variables=["question", "answer"], template="{answer}"
-                        )
-        example_selector = SemanticSimilarityExampleSelector.from_examples(
-                        examples,
-                        OpenAIEmbeddings(),
-                        Chroma,
-                        k=1,
-                    )
-        prompt = FewShotPromptTemplate(
-                    example_selector=example_selector,
-                    example_prompt=example_prompt,
-                    suffix="Question: {input}",
-                    input_variables=["input"],
-                    )
-        self.prompt = prompt
+    def __set_classification_chain(self):
+        
+        prompt_template = """
+        You are a classifier that identifies general question in text. If the text matches the general examples, classify it as 'general'. If it doesn't match, classify it as 'specific'.
+
+        Examples:
+        general: "Explain me what the repository is about"
+        general: "What is this program doing?"
+        general: "How does the project work?"
+        
+
+        Classify the following text:
+        Text: "{text}"
+        Classification:
+        """
+
+        # Initialize the chain
+        classifier = LLMChain(
+            prompt=PromptTemplate.from_template(prompt_template),
+            llm=self.llm
+        )
+            
+        self.chain = classifier
+
+def convert_history(history):
+        new_history = []
+        if len(history.messages) == 0:
+            return []
+        role = ["user", "system"] * int(len(history.messages)/2)
+        for index, mess in enumerate(history.messages):
+            new_history.append({"role": role[index], "content": mess.content})
+
+        return new_history

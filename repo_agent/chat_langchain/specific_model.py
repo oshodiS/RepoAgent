@@ -27,12 +27,12 @@ class SpecificModel(Model):
         self.set_chain()
         
     def set_chain(self):
+        history_prompt = utilities.get_dont_contextualize_system_prompt()
 
-        contextualize_q_system_prompt = utilities.get_contextualize_q_system_prompt()
         qa_system_prompt = utilities.get_qa_system_prompt()
 
         # Create Prompt Templates
-        self.chain = super().create_runnable_chain(contextualize_q_system_prompt, qa_system_prompt, self.retriever)
+        self.chain = super().create_runnable_chain(qa_system_prompt, history_prompt, self.retriever)
 
 
 
@@ -57,8 +57,10 @@ class SpecificModel(Model):
 
     def load_docs(self):
         all_docs = []
-        for subdir, _, _ in os.walk(self.path):
-            loader = DirectoryLoader(os.path.join(self.path, subdir), glob="./*.md", show_progress=True, loader_cls=UnstructuredMarkdownLoader)    
+        abs = os.path.normpath(os.path.abspath(self.path_marksdown))  # Normalize and convert root_path to an absolute path
+
+        for subdir, _, _ in os.walk(abs):
+            loader = DirectoryLoader(os.path.join(abs, subdir), glob="./*.md", show_progress=True, loader_cls=UnstructuredMarkdownLoader)    
             docs = loader.load()
             all_docs.extend(docs)
         self.docs = all_docs

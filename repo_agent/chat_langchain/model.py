@@ -8,17 +8,19 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.runnables.history import RunnableWithMessageHistory
 
 import repo_agent.chat_langchain.utilities as utilities
-class Model:
-    def __init__(self, path, path_hierarchy, model_name):
-        self.path = path
+class Model:  
+    store = {} #static 
+
+
+    def __init__(self, path_marksdown, path_hierarchy, model_name):
+        self.path_marksdown = path_marksdown
         self.llm = ChatOpenAI(temperature=0.1, model_name=model_name)
         #loader = DirectoryLoader(path, glob="./*.md", show_progress=True, loader_cls=UnstructuredMarkdownLoader)
         #docs = loader.load()
         self.docs = None
         self.prompt = None
-        self.store = {}
         self.vectorstore = None
-        self.store = {}
+      
         self.chain = None
         self.hierarchy = utilities.get_json_from_path(path_hierarchy)
 
@@ -33,10 +35,11 @@ class Model:
     
     def get_session_history(self,session_id: str) -> BaseChatMessageHistory:
         """Get the chat history for a session. If the session does not exist, create it."""
-        if session_id not in self.store:
-            self.store[session_id] = ChatMessageHistory()
+        if session_id not in Model.store:
+            Model.store[session_id] = ChatMessageHistory()
        # print(self.store[session_id])
-        return self.store[session_id]
+        return Model.store[session_id]
+    
     
     def get_chain(self):
         return self.chain
@@ -50,9 +53,9 @@ class Model:
             ]
         )
     
-    def create_runnable_chain(self, contextualize_q_system_prompt, qa_prompt, retriever):
+    def create_runnable_chain(self, qa_prompt, history_prompt, retriever):
 
-        contextualize_q_prompt = self.create_chat_prompt(contextualize_q_system_prompt)
+        contextualize_q_prompt = self.create_chat_prompt(history_prompt)
         history_aware_retriever = create_history_aware_retriever( self.llm, retriever, contextualize_q_prompt)
         qa_prompt = self.create_chat_prompt(qa_prompt)
         question_answer_chain = create_stuff_documents_chain(self.llm, qa_prompt)
@@ -68,4 +71,7 @@ class Model:
     def get_chunk_docs(self, chunk_size, chunk_overlap):
         summary_splits = utilities.get_chunk_with_source(self.docs, chunk_size=chunk_size, chunk_overlap=chunk_overlap)
         return summary_splits
-    
+   
+    def set_store(store, session_id):
+        Model.store[session_id] = store
+        

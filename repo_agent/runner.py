@@ -6,7 +6,7 @@ import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
-
+from repo_agent.chat_langchain import utilities
 from colorama import Fore, Style
 from tqdm import tqdm
 from repo_agent.summarization import Summarizator
@@ -153,13 +153,15 @@ class Runner:
             logger.info(
                 f"Successfully generated {before_task_len - len(task_manager.task_dict)} documents."
             )
-            summary = self.summarizator.get_first_summarization()
-            if summary != None:
-                summary.replace(". ", ".\n")
-                summary_file_path = os.path.join(setting.project.target_repo / setting.project.markdown_docs_name, "summary.md")
-        
-                with open(summary_file_path, "w") as file:
-                    file.write(summary)
+
+            if True: #utilities.get_readme_path(setting.project.target_repo) is None:
+                summary = self.summarizator.get_first_summarization()
+                if summary != None:
+                    summary.replace(". ", ".\n")
+                    summary_file_path = os.path.join(setting.project.target_repo / setting.project.markdown_docs_name, "summary.md")
+            
+                    with open(summary_file_path, "w") as file:
+                        file.write(summary)
 
         except BaseException as e:
             logger.info(
@@ -321,13 +323,14 @@ class Runner:
 
         # 将run过程中更新的Markdown文件（未暂存）添加到暂存区
         git_add_result = self.change_detector.add_unstaged_files()
-        summary = self.summarizator.get_first_summarization()
-        if summary != None:
-                summary.replace(". ", ".\n")
-                summary_file_path = os.path.join(setting.project.target_repo / setting.project.markdown_docs_name, "summary.md")
-        
-                with open(summary_file_path, "w") as file:
-                    file.write(summary)
+        if utilities.get_readme_path(setting.project.target_repo) is None:
+            summary = self.summarizator.get_first_summarization()
+            if summary != None:
+                    summary.replace(". ", ".\n")
+                    summary_file_path = os.path.join(setting.project.target_repo, "summary.md")
+            
+                    with open(summary_file_path, "w") as file:
+                        file.write(summary)
     
         if len(git_add_result) > 0:
             logger.info(f"Added {[file for file in git_add_result]} to the staging area.")
