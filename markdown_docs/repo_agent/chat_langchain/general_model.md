@@ -6,16 +6,18 @@
 - path_marksdown: The path to the markdown files.
 - path_hierarchy: The path to the hierarchy.
 - model_name: The name of the model.
-- template: A template for contextualizing questions.
+- template: A template for providing an overview of the project context.
 - chain: Represents the chat language chain.
 - docs: Holds the loaded documents.
 
 **Code Description**:
-The GeneralModel class extends the Model class and initializes with root, path_marksdown, path_hierarchy, and model_name parameters. It sets up a template for contextualizing questions and initializes attributes such as chain and docs. The load_docs method loads documents based on the provided path. The set_chain method creates a runnable chain for chat interactions using a system prompt and a retriever.
+The GeneralModel class extends the Model class and initializes with parameters such as root, path_marksdown, path_hierarchy, and model_name. It sets up a template for project context overview and initializes the chain attribute as None. The load_docs method loads documents using UnstructuredMarkdownLoader based on the provided paths. The set_chain method creates a runnable chain for chat interactions using a system prompt and a retriever. Additionally, the set_vectorstore method initializes the vectorstore for storing document embeddings.
 
-The set_chain method utilizes utilities to get a system prompt and create a retriever, then establishes a runnable chain for chat interactions. The load_docs method retrieves the readme path and loads documents accordingly.
+The class plays a crucial role in managing chat interactions, loading documents, and setting up the chat language chain within the chat language chain system.
 
-**Note**: When using the GeneralModel class, ensure to provide the necessary parameters during initialization to enable its functionalities effectively within the chat language chain system.
+In the project structure, the GeneralModel class is called within the __init__ method of the ChatRepo class to instantiate a GeneralModel object with the required parameters.
+
+**Note**: When utilizing the GeneralModel class, ensure to provide the necessary parameters during initialization to enable its functionalities effectively.
 ### FunctionDef __init__(self, root, path_marksdown, path_hierarchy, model_name)
 **__init__**: The function of __init__ is to initialize the GeneralModel object with specific parameters and set up essential components for chat processing.
 
@@ -53,14 +55,15 @@ This function is a crucial step in setting up the chat processing chain within t
 ### FunctionDef load_docs(self)
 **load_docs**: The function of load_docs is to retrieve and load documents for further processing within the GeneralModel instance.
 **parameters**:
-- None
+- No explicit parameters are passed to this function.
 
 **Code Description**:
-The load_docs function first calls the get_readme_path function from utilities.py to determine the path of the README.md file in the repository. It then uses this path to initialize an UnstructuredMarkdownLoader object, which loads the documents from the specified path. Finally, the loaded documents are assigned to the 'docs' attribute of the GeneralModel instance.
+The load_docs function first attempts to obtain the path of the README.md file in the repository root directory using the get_readme_path function from utilities. If the README.md file is found, a loader is initialized with the path to the README.md file; otherwise, a loader is created with a default path to "summary.md". The loader then loads the documents, and the resulting documents are stored within the GeneralModel instance.
 
-In the context of the project, the load_docs function is an essential part of the GeneralModel class as it ensures that the necessary documents are loaded and available for subsequent chat processing operations. By dynamically determining the path of the README.md file, the function enables flexibility in handling different repository structures.
+This function is crucial for initializing the GeneralModel object with relevant documentation necessary for subsequent chat processing tasks. By dynamically determining the path of the README.md file, the load_docs function ensures that the appropriate documents are loaded into the GeneralModel instance for efficient chat interaction handling.
 
 **Note**:
-It is crucial to ensure that the README.md file is correctly formatted and located in the expected root path for successful document loading.
-Ensure that the GeneralModel instance has been properly initialized before calling the load_docs function to avoid any unexpected behavior.
+- Ensure that the README.md file is correctly named and located in the root directory for successful document loading.
+- The load_docs function is automatically called during the initialization of the GeneralModel object, streamlining the setup process for chat processing.
+- It is recommended to verify the successful loading of documents by accessing the 'docs' attribute within the GeneralModel instance after invoking the load_docs function.
 ***

@@ -1,14 +1,14 @@
-## FunctionDef prova
-**prova**: The function of prova is to assign values to variables a, b, and c, and then return the values of variables b and c.
+## FunctionDef order_numbers(numbers)
+**order_numbers**: The function of order_numbers is to sort a list of numbers in ascending order.
 
 **parameters**:
-- No parameters are passed to this function.
+- numbers: A list of numbers to be sorted.
 
 **Code Description**:
-The function "prova" initializes variables a, b, and c with values 0, 18, and 30 respectively. Then, it assigns the value of b to a, the value of a to b, and sets a to the value of c plus 1. Finally, it returns the values of b and c.
+The order_numbers function takes a list of numbers as input and returns a new list containing the numbers sorted in ascending order using the sorted() function in Python.
 
 **Note**:
-This function does not take any input parameters and directly operates on the variables defined within the function scope.
+Make sure to pass a list of numbers as the input parameter to the order_numbers function for it to work correctly.
 
 **Output Example**:
-If the function is called, it will return (18, 30).
+If order_numbers([3, 1, 2, 5, 4]) is called, the function will return [1, 2, 3, 4, 5].

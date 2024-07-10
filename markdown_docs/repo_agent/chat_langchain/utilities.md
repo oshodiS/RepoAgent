@@ -142,22 +142,22 @@ This function is called within the set_chain methods of both GeneralModel and Sp
 **Output Example**: 
 "Repeat the question as it is. Do NOT add requests for additional information or clarification if not in the original question. Do NOT answer the question."
 ## FunctionDef get_readme_path(root_path)
-**get_readme_path**: The function of get_readme_path is to retrieve the path of the README.md file located in the root of a repository.
-
+**get_readme_path**: The function of get_readme_path is to retrieve the path of the README.md file in the specified repository root directory.
 **parameters**:
-- root_path: The root path of the repository where the README.md file is to be searched.
+- root_path: The root directory path of the repository.
 
 **Code Description**:
-The get_readme_path function uses a regular expression pattern to match the README.md file in a case-insensitive manner. It iterates through the files in the specified root path using os.walk and returns the full path of the README.md file if found. If the README.md file is not found, it returns None.
+The get_readme_path function starts by compiling a regular expression pattern to match README.md or README.txt files in a case-insensitive manner. It then normalizes and obtains the absolute path of the root directory. By traversing the directory structure using os.walk, the function searches for files that match the specified pattern. If a matching file is found, the function returns the full path to that file. If no matching file is found, it returns None.
 
-The function is designed to assist in locating the README.md file within a repository, which can be crucial for accessing important information or documentation related to the project.
+In the project context, the get_readme_path function is utilized by the load_docs method in the GeneralModel class to determine the path of the README.md file in the repository. This path is crucial for loading documents for further processing within the GeneralModel instance.
 
 **Note**:
-- It is essential to ensure that the README.md file follows the expected naming convention for successful retrieval.
-- Make sure to provide the correct root path of the repository when calling this function to locate the README.md file accurately.
+- It is essential to ensure that the README.md file follows the expected naming conventions for successful path retrieval.
+- The root_path parameter should point to the root directory of the repository for accurate path determination.
+- Proper initialization of the GeneralModel instance is necessary before invoking the load_docs method to ensure correct document loading.
 
 **Output Example**:
-If the README.md file is found in the root path of the repository, the function will return the full path to the file. Otherwise, it will return None.
+If the README.md file is found in the specified repository root directory, the function may return a path like: "/path/to/repository/README.md".
 ## FunctionDef load_docs(path_marksdown)
 **load_docs**: The function of load_docs is to load documents from a specified path by walking through the directory structure, using a DirectoryLoader to load Markdown files, and returning a list of all loaded documents.
 **parameters**:

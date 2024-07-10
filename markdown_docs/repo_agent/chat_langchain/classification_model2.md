@@ -8,29 +8,31 @@
 - history: A list to store the history of interactions.
 - methods: A list of methods extracted from the hierarchy.
 - contextualize_q_prompt: A chat prompt template for contextualizing questions.
-- chain: Represents the classification chain for text classification.
+- chain: Represents the classification chain for identifying general and specific questions.
 
 **Code Description**:
-The ClassificationModel class initializes with the path, path_hierarchy, and model_name parameters. It sets up the history list, extracts methods from the hierarchy, and configures contextualize and classification prompts for handling user questions.
+The ClassificationModel class is designed to classify user questions into general or specific categories based on predefined examples. Upon initialization, it sets up the necessary attributes, extracts methods from the hierarchy, and configures the contextualize question prompt and classification chain.
 
-The get_classification method processes user questions by classifying them through predefined examples. It differentiates between general and specific questions and provides appropriate responses based on the classification.
+The get_methods_from_hierarchy method extracts methods from the hierarchy to be used for classification purposes.
 
-The classify_trought_name method checks if a question contains specific methods from the hierarchy and classifies it accordingly.
+The get_classification method classifies user questions by first checking if the question is specific to a method. If so, it returns the method name; otherwise, it processes the question through the classification chain and returns the classification result.
 
-The __set_contextualize_prompt method creates a chat prompt template for contextualizing questions by combining system prompts, chat history, and user input.
+The classify_trought_name method checks if a method name is present in the question for specific classification.
 
-The __add_to_history method manages the history of interactions by storing user inputs and system outputs while maintaining a maximum history length.
+The __set_contextualize_prompt method initializes the contextualize question prompt template for chat interactions.
 
-The __generate_standalone_question method generates a standalone question for processing user inputs within the chat context.
+The __add_to_history method adds user and system interactions to the history list, maintaining a limited history length.
 
-The __set_classification_chain method sets up the classification chain by initializing a prompt template and creating an LLMChain for text classification.
+The __generate_standalone_question method generates a standalone question for processing based on the chat history and user input.
 
-**Note**: When utilizing the ClassificationModel class, ensure to provide the necessary parameters during initialization to enable proper classification and handling of user questions effectively.
+The __set_classification_chain method sets up the classification chain with a predefined prompt template for identifying general and specific questions.
+
+**Note**: Ensure to provide the necessary parameters (path, path_hierarchy, model_name) when initializing the ClassificationModel class to enable proper classification functionality.
 
 **Output Example**:
 ```python
 model = ClassificationModel("path/to/model", "path/to/hierarchy", "model_name")
-classification, question = model.get_classification("User question")
+classification, question = model.get_classification("What is this program about?")
 ```
 ### FunctionDef __init__(self, path, path_hierarchy, model_name)
 **__init__**: The function of __init__ is to initialize a ClassificationModel object with specific attributes and set up contextualized prompts and a classification chain for text classification tasks.
@@ -157,21 +159,19 @@ It is essential to have the necessary dependencies such as LLMChain, convert_his
 If the function is called with a user input "How are you?", the output standalone question could be: "What are your thoughts on the current situation?"
 ***
 ### FunctionDef __set_classification_chain(self)
-**__set_classification_chain**: The function of __set_classification_chain is to set up a classification chain for identifying general questions in text and classifying them as 'general' or 'specific'.
+**__set_classification_chain**: The function of __set_classification_chain is to establish a classification chain for text classification tasks within a chat context.
 
 **parameters**:
 - None
 
 **Code Description**: 
-The __set_classification_chain function initializes a classifier by creating a prompt template with general question examples. It then initializes an LLMChain object with the prompt template and a language model (llm). Finally, it sets the chain attribute of the object to the created classifier.
+The __set_classification_chain function initializes a classifier by setting up a prompt template that guides the classification process based on general question patterns in text. It then creates an instance of the LLMChain class, passing the prompt template and a language model (llm) to the classifier. Finally, the function assigns the created classifier to the 'chain' attribute of the object, enabling it to classify text as either 'general' or 'specific' based on predefined examples and patterns.
 
-This function plays a crucial role in setting up the classification chain within the ClassificationModel object, enabling the identification and classification of text based on general question patterns.
-
-In the project structure, this function is called within the __init__ method of the ClassificationModel class. It ensures that the classification chain is established when a new ClassificationModel object is created, setting the foundation for text classification tasks within the chat context.
+This function is called within the __init__ method of the ClassificationModel class. In the context of the project, the __init__ method initializes a ClassificationModel object with specific attributes, including setting up contextualized prompts and invoking the __set_classification_chain function to establish a classification chain. By calling __set_classification_chain, the ClassificationModel object is equipped to classify text accurately within a chat environment, enhancing its functionality for text classification tasks.
 
 **Note**: 
-- The prompt template provided in the function can be customized to suit different classification requirements.
-- Ensure that the necessary language model (llm) is available before calling this function to avoid any errors in classifier initialization.
+- Ensure that the __set_classification_chain function is called within the __init__ method to properly set up the classification chain for text classification tasks.
+- The function plays a crucial role in enabling the ClassificationModel object to identify and classify text based on general question patterns, improving its performance in chat-based applications.
 ***
 ## FunctionDef convert_history(history)
 **convert_history**: The function of convert_history is to transform the message history into a new format suitable for further processing.
