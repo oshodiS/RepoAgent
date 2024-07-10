@@ -326,6 +326,7 @@ class Runner:
         git_add_result = self.change_detector.add_unstaged_files()
         if True: #utilities.get_readme_path(setting.project.target_repo) is None:
             summary = self.summarizator.get_first_summarization()
+            print(summary)
             if summary != None:
                     summary.replace(". ", ".\n")
                     summary_file_path = os.path.join(setting.project.target_repo, "summary.md")

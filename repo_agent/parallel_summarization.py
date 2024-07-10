@@ -5,8 +5,8 @@ from langchain_core.prompts.prompt import PromptTemplate
 from langchain.chains.llm import LLMChain
 from langchain.chains.combine_documents.stuff import StuffDocumentsChain
 from langchain.chains import MapReduceDocumentsChain, ReduceDocumentsChain
-from langchain.chains.summarize import load_summarize_chain, read_md_files
-from chat_langchain.utilities import split_documents
+from langchain.chains.summarize import load_summarize_chain
+from repo_agent.chat_langchain.utilities import split_documents, load_docs
 import concurrent.futures
 
 
@@ -14,7 +14,7 @@ class ParallelSummarizator:
     def __init__(self, path, model_name):
         self.path = path
         self.llm = ChatOpenAI(temperature=0.1, model_name=model_name)
-        self.docs = read_md_files(self.path)
+        self.docs = load_docs(self.path)
         self.stuff_chain = self.get_stuff_chain()
         self.reduce_chain = self.get_reduce_chain()
 
@@ -33,14 +33,17 @@ class ParallelSummarizator:
     
     def get_reduce_chain(self):
         reduce_template = """The following is a set of summaries: {docs}
-        Please distill these summaries into a final, consolidated summary of the overall contents. Ensure the final summary captures the main points and key details from each document.
-        Helpful Answer:
+        Please distill these summaries into a final, consolidated summary of the overall contents. Ensure the final summary captures the main points and key details.
+        Do NOT mention that you receveid other summaries, write it as a project description.
+
     
         The standard format is as follows:
 
-        # title: 
+        # title: add here the title of the project
         ** Project Description:**  summary of the project
 
+        
+       
         Please note:
         - Write mainly in the desired language. If necessary, you can write with some english words in the analysis and description to enhance the document's readability because you do not need to translate the function name or variable name into the target language.
 
@@ -66,7 +69,7 @@ class ParallelSummarizator:
 
     def get_first_summarization(self):
         print(self.path)
-        self.docs = read_md_files(self.path)
+        self.docs = load_docs(self.path)
         summary = None
         if (len(self.docs) != 0):
             all_splits = []
@@ -77,7 +80,7 @@ class ParallelSummarizator:
                         doc_split.metadata = {'source':filename}        
                     all_splits.extend(splits)
             single_summaries = self.get_parallel_summary(all_splits)
-            summary = self.reduce_chain.invoke(single_summaries)["output_text"]
+            summary = self.reduce_chain.invoke(single_summaries)["text"]
 
         return summary
         

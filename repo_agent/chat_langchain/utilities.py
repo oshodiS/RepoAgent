@@ -68,7 +68,8 @@ def get_dont_contextualize_system_prompt():
 
 def get_readme_path(root_path):
     """Reads the README.md file in the root of the repository."""
-    pattern = re.compile(r'^(read[_]?me)([_]?(md|txt))$', re.IGNORECASE)
+    pattern = re.compile(r'^read[_]?me[.]?(md|txt)$', re.IGNORECASE)
+    root_path = os.path.normpath(os.path.abspath(root_path))
     for root, dirs, files in os.walk(root_path):
         for file in files:
             if pattern.match(file):

@@ -28,8 +28,9 @@ class GeneralModel(Model):
     def load_docs(self):
         readme_path = utilities.get_readme_path(self.root)
         if readme_path is None:
-            loader = UnstructuredMarkdownLoader(self.path_marksdown/"summary.md", show_progress=True)
+            loader = UnstructuredMarkdownLoader(self.root/"summary.md", show_progress=True)
         else:
+            print("readme_path", readme_path)
             loader = UnstructuredMarkdownLoader(readme_path, show_progress=True)
         docs = loader.load()
         self.docs = docs

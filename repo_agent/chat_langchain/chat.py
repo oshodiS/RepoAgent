@@ -31,4 +31,4 @@ class ChatRepo:
                 break
             answer = self.get_answer(question)
             print("\n (me): ", question,"\n")
-            print("\n (repo):",answer, "\n")
+            print("\n (repo):",answer["answer"], "\n")
