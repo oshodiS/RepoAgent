@@ -66,10 +66,6 @@ class ClassificationModel(Model):
         self.history.append({"role": "user", "content": user_input})
         self.history.append({"role": "system", "content": system_output})
 
-    
-
-
-
     def __generate_standalone_question(self, user_input):
         chain = LLMChain(llm=self.llm, prompt=self.contextualize_q_prompt)
         converted_history = convert_history(super().get_session_history("hist123"))
@@ -85,6 +81,7 @@ class ClassificationModel(Model):
         general: "Explain me what the repository is about"
         general: "What is this program doing?"
         general: "How does the project work?"
+        general: "What is the project about?"
         
 
         Classify the following text:
