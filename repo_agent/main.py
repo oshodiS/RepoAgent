@@ -59,7 +59,6 @@ def language_prompt(default_language):
 @click.group()
 @click.version_option(version_number)
 def cli():
-    print("Prova")
     """An LLM-Powered Framework for Repository-level Code Documentation Generation."""
     pass
 
@@ -232,6 +231,7 @@ def run(
     log_level,
 ):
     """Run the program with the specified parameters."""
+    print("Prova")
     start = time.time()
     project_settings = ProjectSettings(
         target_repo=target_repo_path,
