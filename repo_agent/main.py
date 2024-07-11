@@ -64,7 +64,7 @@ def prova():
 @click.version_option(version_number)
 def cli():
     """An LLM-Powered Framework for Repository-level Code Documentation Generation."""
-    print("Welcome to RepoAgento!")
+    print("Welcome to RepoAgent!")
     pass
 
 
