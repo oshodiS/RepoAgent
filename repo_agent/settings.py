@@ -29,7 +29,7 @@ class ProjectSettings(BaseSettings):
     hierarchy_name: str = ".project_doc_record"
     markdown_docs_name: str = "markdown_docs"
     ignore_list: list[str] = []
-    language: str = "Chinese"
+    language: str = "English"
     max_thread_count: PositiveInt = 4
     max_document_tokens: PositiveInt = 1024
     log_level: LogLevel = LogLevel.INFO

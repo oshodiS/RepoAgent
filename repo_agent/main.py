@@ -59,6 +59,7 @@ def language_prompt(default_language):
 @click.group()
 @click.version_option(version_number)
 def cli():
+    print("Prova")
     """An LLM-Powered Framework for Repository-level Code Documentation Generation."""
     pass
 
