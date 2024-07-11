@@ -63,7 +63,6 @@ def prova():
 @click.group()
 @click.version_option(version_number)
 def cli():
-    logger.info("kk result saved in chunking_result.txt")
     """An LLM-Powered Framework for Repository-level Code Documentation Generation."""
     pass
 
@@ -347,6 +346,5 @@ cli.add_command(show_chunk)
 
     
 if __name__ == "__main__":
-   print("Hello")
    logger.info("Chunking result saved in chunking_result.txt")
     
