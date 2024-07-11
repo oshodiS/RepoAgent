@@ -25,7 +25,6 @@ from repo_agent.utils.meta_info_utils import delete_fake_files, make_fake_files
 class Runner:
     def __init__(self):
         print(f"Setting:")
-        return
         self.absolute_project_hierarchy_path = setting.project.target_repo / setting.project.hierarchy_name
 
         self.project_manager = ProjectManager(
@@ -163,7 +162,7 @@ class Runner:
                     summary.replace(". ", ".\n")
                     summary_file_path = os.path.join(setting.project.target_repo / setting.project.markdown_docs_name, "summary.md")
             
-                    with open(summary_file_path, "w") as file:
+                    with open(summary_file_path, "w", encoding='utf-8') as file:
                         file.write(summary)
 
         except BaseException as e:
@@ -333,7 +332,7 @@ class Runner:
                     summary.replace(". ", ".\n")
                     summary_file_path = os.path.join(setting.project.target_repo, "summary.md")
             
-                    with open(summary_file_path, "w") as file:
+                    with open(summary_file_path, "w", encoding='utf-8') as file:
                         file.write(summary)
     
         if len(git_add_result) > 0:

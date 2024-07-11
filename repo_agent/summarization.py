@@ -32,13 +32,12 @@ class Summarizator:
         Helpful Answer:
     
         The standard format is as follows:
-kkkjkl
+
         # title: 
         ** Project Description:**  summary of the project
 
         Please note:
-        - Write mainly in the language of the question. If necessary, you can write with some english words in the analysis and description to enhance the document's readability because you do not need to translate the function name or variable name into the target language.
-
+        - Write in English
         """
         reduce_prompt = PromptTemplate.from_template(reduce_template)
         reduce_chain = LLMChain(llm=self.llm, prompt=reduce_prompt)

@@ -333,7 +333,7 @@ def show_chunk(chunk_size, chunk_overlap):
         specific = SpecificModel(markdown_folder, hierarchy_file, setting.chat_completion.model, chunk_size, chunk_overlap)
         chunking = specific.get_chunk_docs(chunk_size, chunk_overlap)
         # save the chunking result on file 
-        with open("chunking_result.txt", "w") as f:
+        with open("chunking_result.txt", "w", encoding='utf-8') as f:
             for i, chunk in enumerate(chunking):
                 f.write(f"Chunk {i+1}\n")
                 f.write(chunk.page_content)

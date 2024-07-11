@@ -376,7 +376,7 @@ class MetaInfo:
             ) as writer:
                 json.dump(now_hierarchy_json, writer, indent=2, ensure_ascii=False)
 
-            with open(os.path.join(target_dir_path, "meta-info.json"), "w") as writer:
+            with open(os.path.join(target_dir_path, "meta-info.json"), "w", encoding='utf-8') as writer:
                 meta = {
                     "doc_version": self.document_version,
                     "in_generation_process": self.in_generation_process,

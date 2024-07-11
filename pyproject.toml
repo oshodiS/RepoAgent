@@ -47,7 +47,7 @@ classifiers = [
 repository = "https://github.com/LOGIC-10/RepoAgent"
 
 [project.scripts]
-repoagent = "repo_agent.main:prova"
+repoagent = "repo_agent.main:cli"
 
 [tool.pdm]
 [tool.pdm.dev-dependencies]

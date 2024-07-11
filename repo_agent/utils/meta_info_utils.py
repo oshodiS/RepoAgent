@@ -52,7 +52,7 @@ def make_fake_files():
                 print(f"{Fore.LIGHTMAGENTA_EX}[Create Temp-File for Deleted(But not Staged) Files]: {Style.RESET_ALL}{now_file_path} -> {latest_file_path}") 
                 with open(os.path.join(setting.project.target_repo,latest_file_path), "w") as writer:
                     pass
-            with open(os.path.join(setting.project.target_repo,now_file_path), "w") as writer:
+            with open(os.path.join(setting.project.target_repo,now_file_path), "w", encoding='utf-8') as writer:
                 writer.write(raw_file_content)
             file_path_reflections[now_file_path] = latest_file_path #real指向fake
     return file_path_reflections, jump_files
