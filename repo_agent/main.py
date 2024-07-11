@@ -341,8 +341,9 @@ cli.add_command(show_chunk)
 
 def prova():
     print("prova")
+    runner = Runner()
+    
     #runner = Runner()
-    pass
 
     
 if __name__ == "__main__":

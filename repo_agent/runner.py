@@ -24,6 +24,7 @@ from repo_agent.utils.meta_info_utils import delete_fake_files, make_fake_files
 
 class Runner:
     def __init__(self):
+        return
         self.absolute_project_hierarchy_path = setting.project.target_repo / setting.project.hierarchy_name
 
         self.project_manager = ProjectManager(
