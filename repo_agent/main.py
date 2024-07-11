@@ -339,11 +339,10 @@ def show_chunk(chunk_size, chunk_overlap):
         logger.info("Chunking result saved in chunking_result.txt")
 cli.add_command(show_chunk)
 
+@click.command()
 def prova():
-    print("provjjja")
-    runner = Runner()
-    
-    #runner = Runner()
+    """Example function for repoagent."""
+    click.echo("Running prova function.")
 
     
 if __name__ == "__main__":
