@@ -54,6 +54,10 @@ def language_prompt(default_language):
             "Invalid language input. Please enter a valid ISO 639 code or language name."
         )
         raise
+@click.command()
+def prova():
+    """Example function for repoagent."""
+    click.echo("Running prova function.")
 
 
 @click.group()
@@ -339,10 +343,6 @@ def show_chunk(chunk_size, chunk_overlap):
         logger.info("Chunking result saved in chunking_result.txt")
 cli.add_command(show_chunk)
 
-@click.command()
-def prova():
-    """Example function for repoagent."""
-    click.echo("Running prova function.")
 
     
 if __name__ == "__main__":
