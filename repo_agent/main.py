@@ -274,7 +274,7 @@ def print_hierarchy():
 
 
 @cli.command()
-def diff():
+def diffh():
     """Check for changes and print which documents will be updated or generated."""
     runner = Runner()
     if runner.meta_info.in_generation_process:  # 如果不是在生成过程中，就开始检测变更
