@@ -340,7 +340,7 @@ def show_chunk(chunk_size, chunk_overlap):
 cli.add_command(show_chunk)
 
 def prova():
-    print("prova")
+    print("provjjja")
     runner = Runner()
     
     #runner = Runner()
