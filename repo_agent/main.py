@@ -59,8 +59,6 @@ def language_prompt(default_language):
 @click.version_option(version_number)
 def cli():
     """An LLM-Powered Framework for Repository-level Code Documentation Generation."""
-    runner = Runner()
-    runner.run()
     pass
 
 
