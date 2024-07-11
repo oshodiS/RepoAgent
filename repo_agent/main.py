@@ -64,7 +64,6 @@ def prova():
 @click.version_option(version_number)
 def cli():
     """An LLM-Powered Framework for Repository-level Code Documentation Generation."""
-    print("Welcome to RepkoAgent!")
     pass
 
 
@@ -347,5 +346,5 @@ cli.add_command(show_chunk)
 
     
 if __name__ == "__main__":
-    cli()
+   print("Hello")
     
