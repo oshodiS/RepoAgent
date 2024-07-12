@@ -38,14 +38,15 @@ class ParallelSummarizator:
     
         The standard format is as follows:
 
-        # title: add here the title of the project
+        # title: 
         ** Project Description:**  summary of the project
 
         
        
         Please note:
-        - Write mainly in the desired language. If necessary, you can write with some english words in the analysis and description to enhance the document's readability because you do not need to translate the function name or variable name into the target language.
-
+        - Write in english
+        - select and appropriate project title for the project are summarizing and replace the #title
+    
         """
         reduce_prompt = PromptTemplate.from_template(reduce_template)
         reduce_chain = LLMChain(llm=self.llm, prompt=reduce_prompt)

@@ -107,20 +107,20 @@ The print_recursive method facilitates the structured printing of repository obj
 
 Please note that the provided code does not include the implementation of the Runner class and the print_recursive method. The documentation assumes that these components are implemented correctly and function as described.
 ## FunctionDef refresh_summary
-**refresh_summary**: The function of refresh_summary is to check if a README file exists in the target repository. If the README file is not found, it initiates a summarization process to generate a summary file based on the content of the repository.
+**refresh_summary**: The function of refresh_summary is to generate a summary of documents by processing them in parallel and consolidating the individual summaries into a final summary.
 
 **parameters**:
 - None
 
-**Code Description**:
-The refresh_summary function first determines the path to the markdown documents in the target repository. It then uses the get_readme_path function to check if a README file exists. If no README file is found, it creates an instance of the ParallelSummarizator class to generate a summary by processing the documents in parallel. The individual summaries are then consolidated into a final summary, which is written to a "summary.md" file in the target repository. If a README file is already present, the function logs a message indicating that there is no need to refresh the summary.
+**Code Description**: 
+The refresh_summary function first determines the markdown folder path for the summary generation. It then checks if there is a need to refresh the summary based on the existence of a readme file. If a summary is required, it initializes a ParallelSummarizator object, generates the first summarization of the documents, and writes the summary to a file named "summary.md" in the target repository. If no refresh is needed, it logs a message indicating that the readme file already exists.
 
-The function interacts with the ParallelSummarizator class to handle the summarization process efficiently. By utilizing the capabilities of the ParallelSummarizator class, the refresh_summary function ensures that the summary of the repository's content is up to date and concise.
+The function interacts with the ParallelSummarizator class to handle the parallel processing of document summaries and the consolidation of these summaries into a final output. By utilizing predefined chains for document processing and reduction, the refresh_summary function enhances the summarization workflow within the project.
 
 **Note**:
-- The refresh_summary function plays a crucial role in maintaining an updated summary of the repository's content.
-- It relies on the get_readme_path function to determine the presence of a README file for decision-making.
-- The function utilizes the ParallelSummarizator class to generate and update the summary file effectively.
+- Ensure that the target repository and markdown documents are correctly set up for the summary generation process.
+- Handle any exceptions that may occur during the summary generation to maintain the integrity of the process.
+- Monitor the logging messages to track the status of the summary generation workflow effectively.
 ## FunctionDef diff
 An unknown error occurred while generating this documentation after many tries.
 ## FunctionDef chat_with_repo(chunk_size, chunk_overlap)

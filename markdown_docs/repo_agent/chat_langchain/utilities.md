@@ -145,25 +145,22 @@ In the project, this function is called in two different contexts:
 **Output Example**: 
 "Repeat the question as it is. Do NOT add requests for additional information or clarification if not in the original question. Do NOT answer the question."
 ## FunctionDef get_readme_path(root_path)
-**get_readme_path**: The function of get_readme_path is to search for the README.md file within the root of a repository and return its path if found.
+**get_readme_path**: The function of get_readme_path is to locate and return the path of the README.md file in the root of a repository.
 
 **parameters**:
-- root_path: The root path of the repository to search for the README.md file.
+- root_path: The root path of the repository where the README.md file is to be located.
 
 **Code Description**:
-The get_readme_path function starts by compiling a regular expression pattern to match README.md or README.txt files case-insensitively. It then normalizes and obtains the absolute path of the root directory. The function iterates through all files in the directory and its subdirectories using os.walk. If a file matches the pattern, the function returns the full path to that file. If no README file is found, it returns None.
+The get_readme_path function uses a regular expression pattern to match README file variations (e.g., README.md, readme.txt) in a case-insensitive manner. It then normalizes and retrieves the absolute path of the root directory. By traversing the directory structure using os.walk, the function searches for files matching the README pattern. If a match is found, it returns the full path of the README file; otherwise, it returns None.
 
-This function is utilized in the project in the following way:
-- In the GeneralModel class within general_model.py, the load_docs method calls get_readme_path to determine the path of the README.md file in the repository root. Depending on the existence of the README file, different loaders are used to load the documentation.
-- In the refresh_summary function in main.py, get_readme_path is used to check if a README file exists in the target repository. If not found, a summarization process is initiated and a summary file is generated based on the content.
-- In the first_generate method of the Runner class in runner.py, get_readme_path is employed to verify the presence of a README file in the target repository. If the file is missing, a summarization process is triggered to generate a summary file.
+This function is called by various objects in the project, such as the load_docs function in the GeneralModel class and the first_generate function in the Runner class. In the load_docs function, get_readme_path is utilized to determine the path of the README file for loading documentation. Similarly, in the first_generate function, get_readme_path is used to identify the README file path for generating documentation in the project.
 
-**Note**: 
-- This function is essential for locating the README file in a repository, which is often used for documentation purposes.
-- It is crucial to ensure the correct root path is provided to the function for accurate results.
+**Note**:
+- Ensure to provide the correct root path to accurately locate the README file.
+- The function plays a crucial role in locating the README file within a repository for documentation purposes.
 
 **Output Example**:
-If the README.md file is found in the repository root, the function will return something like: "C:/project/repo_agent/README.md". If no README file is found, the function will return None.
+If the README.md file is found in the root directory of the repository, the function will return the full path of the README.md file.
 ## FunctionDef load_docs(path_marksdown)
 **load_docs**: The function of load_docs is to load markdown documents from a specified path.
 
