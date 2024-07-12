@@ -154,6 +154,23 @@ The print_recursive function is primarily used in the print_hierarchy function a
 ```
 
 **Note**: During the document update process, the target repository code should not be modified. The generation process of a document is bound to a specific version of the code.
+## FunctionDef refresh_summary
+**refresh_summary**: The function of refresh_summary is to update the summary of documents in the target repository if the README file is not present, ensuring the summary reflects the latest content.
+
+**parameters**:
+- None
+
+**Code Description**: 
+The refresh_summary function first checks if the README file is missing in the target repository. If the README file is not found, it initializes a ParallelSummarizator object to perform summarization tasks. The function generates a summary by processing and consolidating individual document summaries. The final summary is then saved in a Markdown file named "summary.md" within the repository.
+
+If the README file already exists in the repository, the function logs a message indicating that there is no need to refresh the summary.
+
+The refresh_summary function plays a crucial role in maintaining up-to-date summaries of the repository's content, enhancing documentation management and accessibility for users.
+
+**Note**:
+- The refresh_summary function relies on the ParallelSummarizator class for document summarization.
+- It ensures that the summary reflects the most recent content of the repository.
+- Developers should verify the presence of the README file to determine if the summary needs to be refreshed.
 ## FunctionDef diff
 An unknown error occurred while generating this documentation after many tries.
 ## FunctionDef chat_with_repo(chunk_size, chunk_overlap)

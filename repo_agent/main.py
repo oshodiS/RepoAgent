@@ -11,10 +11,13 @@ from tenacity import (
 import os
 from repo_agent.chat_langchain.specific_model import SpecificModel
 from repo_agent.chat_langchain.chat import ChatRepo
+from repo_agent.chat_langchain.chat import ChatRepo
 from repo_agent.config_manager import write_config
 from repo_agent.doc_meta_info import DocItem, MetaInfo
 from repo_agent.log import logger, set_logger_level_from_config
 from repo_agent.runner import Runner, delete_fake_files
+from repo_agent.chat_langchain import utilities
+from repo_agent.parallel_summarization import ParallelSummarizator
 from repo_agent.settings import (
     ChatCompletionSettings,
     LogLevel,
@@ -272,6 +275,22 @@ def print_hierarchy():
     runner.meta_info.target_repo_hierarchical_tree.print_recursive()
     logger.success("Hierarchy printed.")
 
+@cli.command()
+def refresh_summary():
+    markdown_folder = setting.project.target_repo / setting.project.markdown_docs_name
+
+    if utilities.get_readme_path(setting.project.target_repo) is None:
+                summarizator = ParallelSummarizator(markdown_folder, setting.chat_completion.model)
+                summary = summarizator.get_first_summarization()
+                logger.info("Summary generation...")
+                if summary != None:
+                    summary.replace(". ", ".\n")
+                    summary_file_path = os.path.join(setting.project.target_repo / setting.project.markdown_docs_name, "summary.md")
+                    with open(summary_file_path, "w") as file:
+                        file.write(summary)
+                    logger.info("Summary file generated successfully.")
+    else:
+        logger.info("Readme file already exists. No need to refresh the summary.")
 
 @cli.command()
 def diff():

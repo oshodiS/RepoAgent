@@ -6,10 +6,10 @@ import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
-from repo_agent.chat_langchain import utilities
 from colorama import Fore, Style
 from tqdm import tqdm
 #from repo_agent.summarization import Summarizator
+from repo_agent.chat_langchain import utilities
 from repo_agent.parallel_summarization import ParallelSummarizator
 from repo_agent.change_detector import ChangeDetector
 from repo_agent.chat_engine import ChatEngine
@@ -154,9 +154,9 @@ class Runner:
                 f"Successfully generated {before_task_len - len(task_manager.task_dict)} documents."
             )
             markdown_folder = setting.project.target_repo / setting.project.markdown_docs_name
-            self.summarizator = ParallelSummarizator(markdown_folder, setting.chat_completion.model)
-        
+            
             if utilities.get_readme_path(setting.project.target_repo) is None:
+                self.summarizator = ParallelSummarizator(markdown_folder, setting.chat_completion.model)
                 summary = self.summarizator.get_first_summarization()
                 if summary != None:
                     summary.replace(". ", ".\n")

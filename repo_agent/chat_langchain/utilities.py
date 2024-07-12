@@ -82,7 +82,7 @@ def load_docs(path_marksdown):
         for subdir, _, _ in os.walk(abs):
                     try:
                         # Instantiate the loader for each subdirectory
-                        loader = DirectoryLoader(subdir, glob="*.md", show_progress=False, loader_cls=UnstructuredMarkdownLoader)
+                        loader = DirectoryLoader(subdir, glob="*.md", show_progress=True, loader_cls=UnstructuredMarkdownLoader)
                         docs = loader.load()
                         all_docs.extend(docs)
                     except Exception as e:

@@ -2,7 +2,7 @@
 **Runner**: The Runner class is responsible for managing the document generation and update process.
 
 **Attributes**:
-- `absolute_project_hierarchy_path`: A string representing the absolute path of the project hierarchy.
+- `absolute_project_hierarchy_path`: A string representing the absolute path to the project hierarchy.
 - `project_manager`: An instance of the ProjectManager class responsible for managing the project.
 - `change_detector`: An instance of the ChangeDetector class responsible for detecting changes in the repository.
 - `chat_engine`: An instance of the ChatEngine class responsible for generating documentation using chat completion.
@@ -10,30 +10,29 @@
 - `runner_lock`: A threading.Lock object used for thread synchronization.
 
 **Code Description**:
-The Runner class is the main class responsible for managing the document generation and update process. It initializes the necessary objects and provides methods for generating and updating documentation.
+The Runner class is the main class responsible for managing the document generation and update process. It initializes various components and provides methods for generating and updating documentation.
 
-The `__init__` method initializes the Runner object by setting the `absolute_project_hierarchy_path` attribute to the target repository's project hierarchy path. It also initializes the `project_manager`, `change_detector`, `chat_engine`, and `meta_info` attributes with their respective objects. The `runner_lock` attribute is used for thread synchronization.
+The `__init__` method initializes the Runner object by setting the `absolute_project_hierarchy_path` attribute to the target repository's project hierarchy path. It also initializes the `project_manager`, `change_detector`, `chat_engine`, and `meta_info` attributes with their respective instances.
 
-The `get_all_pys` method is a utility method that takes a directory path as input and returns a list of paths to all Python files in the given directory. It uses the `os.walk` function to recursively traverse the directory and identify Python files based on their file extension.
+The `get_all_pys` method is a utility method that takes a directory path as input and returns a list of paths to all Python files in that directory. It uses the `os.walk` function to traverse the directory and checks if each file has a ".py" extension before adding it to the list.
 
-The `generate_doc_for_a_single_item` method is responsible for generating documentation for a single object. It takes a `doc_item` parameter of type `DocItem` representing the object for which documentation needs to be generated. It uses the `chat_engine` object to generate the documentation by calling the `generate_doc` method and updates the `md_content` attribute of the `doc_item` object with the generated documentation. It also updates the `item_status` attribute of the `doc_item` object to indicate that the documentation is up to date. The `meta_info` object is then checkpointed to save the changes.
+The `generate_doc_for_a_single_item` method is responsible for generating documentation for a single object. It takes a `DocItem` object as input and uses the `chat_engine` to generate the documentation. The generated documentation is appended to the `md_content` attribute of the `DocItem` object, and the `item_status` is updated accordingly.
 
-The `first_generate` method is responsible for generating all the documents in the target repository. It initializes a `task_manager` object using the `get_topology` method of the `meta_info` object. It then iterates over the tasks in the `task_manager` and calls the `generate_doc_for_a_single_item` method for each task using multiple threads. After generating the documents, the `document_version` attribute of the `meta_info` object is updated with the latest commit hash. The `meta_info` object is then checkpointed to save the changes. Finally, a `summarizator` object is created to generate a summary of the generated documents.
+The `first_generate` method is used to generate all the documents for the first time. It initializes the task manager and starts the document generation process. It checks if the `.project_hierarchy` folder exists and if not, it creates fake files and initializes the `meta_info` with the generated files. If the folder exists, it loads the `meta_info` from the checkpoint. After generating the documents, it updates the `meta_info` and writes it to the `.project_hierarchy` folder. It also updates the document version and writes the markdown files.
 
-The `markdown_refresh` method is responsible for writing the latest document information to a folder in markdown format. It first deletes the existing contents of the markdown folder and then iterates over the files in the `meta_info` object to convert the content to markdown format and write it to the corresponding `.md` files in the markdown folder.
+The `markdown_refresh` method is responsible for writing the latest document information to a folder in markdown format. It first deletes all contents under the `markdown_docs_name` folder and then rewrites the markdown files based on the `md_content` attribute of each `DocItem` object in the `meta_info`. It uses the `to_markdown` helper function to convert each `DocItem` object to markdown format.
 
-The `git_commit` method is responsible for committing the changes to the repository. It takes a `commit_message` parameter as input and uses the `subprocess.check_call` function to execute the git commit command with the provided commit message.
+The `git_commit` method is used to commit the changes made during the document update process. It takes a commit message as input and uses the `subprocess` module to execute the git commit command.
 
-The `run` method is the main method that executes the document update process. It first checks if the document version is empty, indicating that it is the first time generating the documents. If so, it calls the `first_generate` method to generate all the documents. Otherwise, it checks for changes in the repository using the `change_detector` object. If changes are detected, it calls the `process_file_changes` method to process the changed files and update the documents accordingly. After the document update process is completed, it calls the `markdown_refresh` method to update the markdown files and adds the unstaged markdown files to the git staging area using the `change_detector` object. Finally, it commits the changes to the repository using the `git_commit` method.
+The `run` method is the main method of the Runner class. It runs the document update process by calling the `first_generate` method if the document version is empty. Otherwise, it detects changes in the repository, updates the documents accordingly, and commits the changes. It also updates the markdown files and writes the summary if it doesn't exist.
 
-**Note**:
-- During the first_generate process, the target repository code cannot be modified.
-- The document generation process is bound to a specific version of the code.
-- The `summarizator` object is used to generate a summary of the generated documents.
-- The `markdown_refresh` method updates the markdown files in the markdown folder.
-- The `git_commit` method commits the changes to the repository.
+The `add_new_item` method is used to add new projects to the JSON file and generate corresponding documentation. It takes a `file_handler` object and a `json_data` dictionary as input. It iterates through the functions and classes in the file, generates documentation for each object using the `chat_engine`, and updates the `json_data` dictionary with the generated documentation. It then writes the updated `json_data` to the project hierarchy file and writes the markdown files.
 
-**Output Example**: None
+The `process_file_changes` method is called in the loop of detected changed files. It processes the changed files by updating the JSON file and generating documentation for the changed objects. It takes the repository path, file path, and a flag indicating whether the file is new as input. It creates a `file_handler` object for the file and retrieves the source code and changed lines. It identifies the added and deleted objects and updates the JSON file and `file_dict` accordingly. It also generates documentation for the added objects using the `chat_engine` and updates the `md_content` attribute of each object. Finally, it adds the updated markdown files to the staging area.
+
+The `update_existing_item` method is used to update existing projects in the JSON file. It takes a `file_dict`, `file_handler`, and `changes_in_pyfile` as input. It updates the `file_dict` with the updated information of the existing objects and generates documentation for the added objects using the `chat_engine`. It also retrieves the referencer list for each added object and updates the `file_dict` with the generated documentation. Finally, it returns the updated `file_dict`.
+
+The `update_object` method is a helper method used by the `update_existing_item` method to generate documentation content and update the corresponding field information of
 ### FunctionDef __init__(self)
 An unknown error occurred while generating this documentation after many tries.
 ***
@@ -77,50 +76,47 @@ Finally, the function calls the `checkpoint` method of the `meta_info` object to
 **Note**: The `generate_doc_for_a_single_item` function generates documentation for a given object. It interacts with the OpenAI chat model and updates the `MetaInfo` object to keep track of the documentation status. Developers can use this function to automatically generate detailed and accurate documentation for code objects in their projects.
 ***
 ### FunctionDef first_generate(self)
-**first_generate**: The `first_generate` function is responsible for generating all the documentation for the target repository. It ensures that the generation process is bound to a specific version of the code and handles errors that may occur during the generation process.
+**first_generate**: The function of `first_generate` is to generate all documents for the target repository. It ensures that the generation process is bound to a specific version of the code and handles errors during the generation process.
 
-**Parameters**:
+**parameters**:
 - `self`: The current instance of the object.
 
 **Code Description**:
-The `first_generate` function starts by logging an information message indicating the start of the documentation generation process. It then defines the `check_task_available_func` variable as a partial function of `need_to_generate`, which determines whether a documentation item needs to be generated based on its status and other conditions. The `ignore_list` parameter is passed to the `need_to_generate` function to specify file paths to be ignored during generation.
+The `first_generate` function is responsible for generating all documents for the target repository. It starts by logging an information message indicating the start of the document generation process.
 
-The function retrieves the `task_manager` object from the `meta_info` attribute using the `get_topology` method. This method calculates the topological order of all objects in the repository based on the `check_task_available_func` function. The `task_manager` object manages the tasks to be executed in the specified order.
+The function then defines a `check_task_available_func` function using the `partial` function from the `functools` module. This function is used to determine whether a documentation item needs to be generated based on its status and other conditions. It is passed as a parameter to the `get_task_manager` method of the `meta_info` attribute.
 
-The function checks the length of the `task_manager.task_dict` to determine the number of tasks before generation. It sets the `before_task_len` variable to this value.
+The `task_manager` object is obtained by calling the `get_task_manager` method of the `meta_info` attribute. This method calculates the topological order of all objects in the repository and returns a `TaskManager` object that manages tasks based on the topology.
 
-If the `meta_info.in_generation_process` attribute is `False`, indicating that it is not in the middle of a generation process, the function sets `meta_info.in_generation_process` to `True` and logs an information message indicating the initialization of a new task list. Otherwise, it logs a message indicating that the task list is being loaded from an existing process.
+The function prints the task list using the `print_task_list` method of the `meta_info` attribute. This method displays a table of task information including task ID, generation reason, path, and dependencies.
 
-The function then calls the `print_task_list` method of the `meta_info` object to print a table of task information, including task ID, generation reason, path, and dependencies.
+The `sync_func` attribute of the `task_manager` object is set to the `markdown_refresh` function. This function is responsible for updating the markdown documents based on the latest document information.
 
-Inside a try-except block, the function sets the `task_manager.sync_func` attribute to the `markdown_refresh` method. This method is responsible for writing the latest document information to a folder in markdown format.
+The function creates multiple threads, each targeting the `worker` function. The `worker` function performs tasks assigned by the `task_manager` object. The `generate_doc_for_a_single_item` function is passed as the `handler` parameter to the `worker` function.
 
-The function creates a list of threads, where each thread represents a worker that will handle a task. The number of threads is determined by the `setting.project.max_thread_count` value. Each thread is initialized with the `worker` function, the `task_manager`, the process ID, and the `generate_doc_for_a_single_item` function.
+The threads are started and joined, ensuring that all tasks are completed before proceeding.
 
-The function starts each thread and waits for them to finish using the `thread.join` method.
+After the tasks are completed, the function updates the document version of the `meta_info` object to the latest commit hash of the repository. It also sets the `in_generation_process` attribute of the `meta_info` object to `False` to indicate that the generation process is complete.
 
-After all threads have finished, the function updates the `document_version` attribute of the `meta_info` object with the commit hash of the current repository head. It sets `meta_info.in_generation_process` to `False` to indicate that the generation process has finished. It then calls the `checkpoint` method of the `meta_info` object to save the updated `MetaInfo` object to the specified directory.
+The `checkpoint` method of the `meta_info` object is called to save the updated `MetaInfo` object to the specified directory.
 
-If an exception occurs during the generation process, the function logs an error message and sets the `item_status` attribute of the `doc_item` to indicate that the documentation has not been generated.
+The `markdown_refresh` function is then called to update the markdown documents based on the latest document information.
 
-Finally, the function initializes a `ParallelSummarizator` instance to perform the initial summarization of documents in the target repository. It calls the `get_first_summarization` method of the `summarizator` object to generate a summary of the first document in the repository. If a summary is generated, it is written to a file named "summary.md" in the markdown folder.
+Finally, the function logs an information message indicating the successful completion of the document generation process.
 
 **Note**:
-- The `first_generate` function is responsible for generating all the documentation for the target repository.
+- The `first_generate` function generates all documents for the target repository.
 - It ensures that the generation process is bound to a specific version of the code.
-- It handles errors that may occur during the generation process.
-- The `check_task_available_func` parameter can be used to specify conditions for generating documentation.
-- The `task_manager` object manages the tasks to be executed in the specified order.
-- The `markdown_refresh` method writes the latest document information to a folder in markdown format.
-- The `worker` function performs tasks assigned by the task manager.
-- The `generate_doc_for_a_single_item` function generates documentation for a single object.
-- The `ParallelSummarizator` class provides parallel summarization capabilities for documents in the target repository.
-- The `get_first_summarization` method generates a summary of the first document in the repository.
-- The `summary.md` file is created in the markdown folder if a summary is generated.
-
-**Output Example**:
-- If the generation process is successful, an information message will be logged indicating the successful generation of documents.
-- If an error occurs during the generation process, an error message will be logged indicating the failure and the number of documents generated at that time.
+- It handles errors during the generation process and continues generating documents in the file order.
+- The `check_task_available_func` function is used to determine whether a documentation item needs to be generated based on its status and other conditions.
+- The `task_manager` object manages tasks based on the topological order of objects in the repository.
+- The `print_task_list` method displays a table of task information for better task management and tracking.
+- The `sync_func` attribute of the `task_manager` object is set to the `markdown_refresh` function to update the markdown documents.
+- Multiple threads are used to perform tasks assigned by the `task_manager` object in parallel.
+- The document version and generation process status are updated in the `meta_info` object.
+- The `checkpoint` method saves the updated `MetaInfo` object to the specified directory.
+- The `markdown_refresh` function updates the markdown documents based on the latest document information.
+- An information message is logged to indicate the successful completion of the document generation process.
 ***
 ### FunctionDef markdown_refresh(self)
 **markdown_refresh**: The function of markdown_refresh is to write the latest document information to a folder in markdown format, regardless of whether the markdown content has changed.

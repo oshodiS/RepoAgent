@@ -142,37 +142,41 @@ This function is called within the set_chain methods of both GeneralModel and Sp
 **Output Example**: 
 "Repeat the question as it is. Do NOT add requests for additional information or clarification if not in the original question. Do NOT answer the question."
 ## FunctionDef get_readme_path(root_path)
-**get_readme_path**: The function of get_readme_path is to retrieve the path of the README.md file in the root directory of a repository.
+**get_readme_path**: The function of get_readme_path is to retrieve the path of the README.md file located in the root directory of a repository.
 
 **parameters**:
 - root_path: The root path of the repository.
 
 **Code Description**:
-The get_readme_path function uses a regular expression pattern to match the README.md file in the specified root directory. It normalizes and obtains the absolute path of the root directory. Then, it iterates through the files in the directory using os.walk and checks for a file that matches the pattern. If a match is found, the function returns the full path of the README.md file. If no match is found, it returns None.
+The get_readme_path function utilizes a regular expression pattern to identify the README.md file within the repository root directory. It normalizes and obtains the absolute path of the root directory. By traversing through the directory structure using os.walk, the function searches for files matching the specified pattern. If a file matching the pattern is found, the function returns the full path to that file. If no matching file is found, it returns None.
 
-This function is utilized in various parts of the project to locate the README.md file within a repository, ensuring the availability of essential documentation for further processing tasks.
+The function ensures the accurate retrieval of the README.md file path, which is essential for various repository-related operations such as document loading and processing.
+
+In the project, the get_readme_path function is called within the load_docs method of the GeneralModel class in the context of initializing the GeneralModel object with relevant documentation. By obtaining the README.md file path, the load_docs function ensures that the appropriate documents are loaded into the GeneralModel instance for efficient chat interaction handling.
 
 **Note**:
-- It is crucial to ensure that the README.md file is correctly named and located in the root directory for successful path retrieval.
-- The get_readme_path function is commonly called during the initialization of objects to access repository documentation.
-- Developers can verify the returned path by invoking the function with the root path parameter and checking the output for the README.md file path.
+- It is crucial to have the README.md file correctly named and located in the root directory for successful path retrieval.
+- The get_readme_path function plays a vital role in determining the path to the README.md file, facilitating the loading of essential documentation for subsequent processing tasks.
+- Developers should verify the successful retrieval of the README.md file path by checking the return value of the function.
+- The function enhances the functionality of the GeneralModel class by enabling the loading of necessary documents for chat processing tasks.
 
 **Output Example**:
-If the README.md file is found in the root directory, the function may return: "C:/project/repository/README.md". If the file is not found, it will return None.
+If the README.md file is found in the root directory, the function may return a path similar to: "C:\repository\README.md".
 ## FunctionDef load_docs(path_marksdown)
-**load_docs**: The function of load_docs is to load documents from a specified path, process each subdirectory to instantiate a loader, and handle any loading errors that may occur during the process.
+**load_docs**: The function of load_docs is to load documents from a specified path, process each subdirectory to instantiate a loader, and handle any exceptions that may occur during the loading process.
 
 **parameters**:
 - path_marksdown: The path to the directory containing the documents.
 
 **Code Description**:
-The load_docs function begins by converting the given path to an absolute path for normalization. It then iterates through each subdirectory using os.walk, instantiates a DirectoryLoader for each subdirectory with specific parameters, loads the documents using the loader, and appends the loaded documents to a list. In case of any exceptions during the loading process, the function captures and prints the error message. Finally, it returns a list containing all the loaded documents.
+The load_docs function first obtains the absolute path of the specified directory. It then iterates through each subdirectory using os.walk and attempts to load documents by instantiating a DirectoryLoader for each subdirectory with specific parameters. If an exception occurs during the loading process, it is caught and an error message is printed. Finally, the function returns a list containing all the loaded documents.
 
-The load_docs function serves as a crucial component in the document loading process, ensuring that documents are efficiently loaded and processed from the specified directory path. It plays a vital role in facilitating the retrieval and utilization of documents within the application context.
+In the project structure, load_docs is utilized by other objects such as SpecificModel's __init__ method to load documents for initializing the SpecificModel object and by ParallelSummarizator's get_first_summarization method to load documents for generating summaries. This function serves as a crucial component for handling document loading tasks efficiently within the project's context.
 
 **Note**:
-- Ensure the path provided is valid and contains the necessary documents for loading.
-- Handle any potential loading errors gracefully to maintain the stability of the document loading process.
+- Ensure the path provided is correct and accessible.
+- Handle any exceptions that may arise during the document loading process appropriately.
+- Utilize the returned list of documents based on the specific requirements of the calling functions.
 
-**Output Example**: 
-[doc1, doc2, doc3, ...]
+**Output Example**:
+[document1, document2, document3, ...]

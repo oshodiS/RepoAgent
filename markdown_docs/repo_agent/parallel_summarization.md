@@ -1,26 +1,24 @@
 ## ClassDef ParallelSummarizator
-**ParallelSummarizator**: The function of ParallelSummarizator is to provide parallel summarization capabilities by utilizing multiple threads to process and summarize documents concurrently.
+**ParallelSummarizator**: The function of ParallelSummarizator is to provide parallel summarization capabilities for documents in a target repository.
 
-**attributes**:
-- path: The path to the target repository containing documents to be summarized.
+**Attributes**:
+- path: Represents the path to the target repository.
 - llm: An instance of the ChatOpenAI class used for language modeling.
-- stuff_chain: A chain of processes for generating concise summaries of input text.
-- reduce_chain: A chain of processes for consolidating multiple summaries into a final, comprehensive summary.
+- stuff_chain: Represents the chain for processing individual documents.
+- reduce_chain: Represents the chain for reducing multiple summaries into a final consolidated summary.
 
-**Code Description**: 
-The ParallelSummarizator class initializes with a path to the repository and a model name. It sets up language modeling and chains for processing summaries. The get_stuff_chain method creates a chain for generating concise summaries. The get_reduce_chain method creates a chain for consolidating summaries. The get_parallel_summary method processes documents in parallel using multiple threads. The get_first_summarization method loads documents, splits them, generates parallel summaries, and then consolidates them into a final summary.
+**Code Description**:
+The ParallelSummarizator class initializes with a path and a model name. It utilizes the ChatOpenAI class for language modeling and creates chains for processing and reducing summaries. The get_stuff_chain method sets up a chain for processing individual documents, while the get_reduce_chain method prepares a chain for consolidating multiple summaries. The get_parallel_summary method processes multiple documents in parallel using threads. The get_first_summarization method loads documents from the specified path, splits them, processes them in parallel, and then reduces the summaries into a final consolidated summary.
 
-In the project, the first_generate function in the Runner class triggers the document generation process. It calculates the topological order of objects in the repository and generates documents accordingly. The first_generate function initializes a ParallelSummarizator instance to perform the initial summarization of documents in the target repository.
+In the project, the ParallelSummarizator class is called by the first_generate function in the Runner class. The first_generate function generates documentation for the target repository and utilizes the ParallelSummarizator class to perform the initial summarization of documents in the repository.
 
-**Note**: 
-- The ParallelSummarizator class enhances document summarization by leveraging parallel processing.
-- It optimizes the summarization process by utilizing multiple threads for efficiency.
-- The class integrates with the Runner class to facilitate document generation and summarization in the project.
+**Note**:
+- The ParallelSummarizator class enhances the summarization process by enabling parallel processing of documents.
+- It utilizes language modeling and chaining techniques to process and reduce summaries effectively.
+- The class is an essential component in the documentation generation process of the target repository.
 
-**Output Example**: 
-["Final consolidated summary of the overall contents."]
-
-
+**Output Example**:
+If successful, the get_first_summarization method returns a consolidated summary of the documents in the repository.
 ### FunctionDef __init__(self, path, model_name)
 **__init__**: The function of __init__ is to initialize the ParallelSummarizator object with the provided path and model_name, as well as to set up the stuff_chain and reduce_chain attributes.
 
@@ -105,30 +103,28 @@ It is assumed that the stuff_chain attribute is initialized and contains the nec
 ***
 ***
 ### FunctionDef get_first_summarization(self)
-**get_first_summarization**: The function of get_first_summarization is to generate a summary of the first document in a target repository. It utilizes the `load_docs` function to load the documents from a specified path. The function then splits the loaded documents into smaller chunks using the `split_documents` function. Each chunk is assigned a source metadata based on the document's filename. The chunks are passed to the `get_parallel_summary` function for parallel processing. The results are further processed to generate a single summary using a chain of operations.
+**get_first_summarization**: The function of get_first_summarization is to generate a summary of the first document in the target repository.
 
 **parameters**:
-- self: The current instance of the object.
+- None
 
 **Code Description**:
-The `get_first_summarization` function starts by printing the path of the target repository. It then calls the `load_docs` function to load the documents from the specified path. The loaded documents are stored in the `self.docs` attribute.
+The get_first_summarization function is a method of the ParallelSummarizator class. It is responsible for generating a summary of the first document in the target repository. The function first prints the path of the current object. It then calls the load_docs function to load the documents from the specified path. The loaded documents are stored in the self.docs attribute of the object.
 
-Next, the function checks if the loaded documents list is not empty. If it is not empty, the function proceeds with the summarization process. It initializes an empty list `all_splits` to store the splits of the documents.
+Next, the function checks if the number of loaded documents is not equal to zero. If there are documents loaded, the function proceeds to split each document into smaller chunks using the split_documents function. The split documents are assigned a source metadata based on the document's filename. All the splits are then concatenated into a single list.
 
-The function iterates over each document in the `self.docs` list and calls the `split_documents` function to split the document into smaller chunks. Each chunk is assigned a source metadata based on the document's filename. The splits are then added to the `all_splits` list.
+The function then calls the get_parallel_summary function to process the list of splits concurrently. The get_parallel_summary function utilizes a ThreadPoolExecutor to concurrently process each split using the process_document_with_chain function. The results are stored in the single_summaries variable.
 
-After all the documents have been processed, the function calls the `get_parallel_summary` function, passing the `all_splits` list as the input. This function processes the chunks concurrently using a ThreadPoolExecutor and returns a list of results containing the output text of each processed chunk.
+Finally, the function uses the reduce_chain attribute to invoke the reduce_chain function and generate a single summary from the list of single_summaries. The generated summary is stored in the summary variable.
 
-The function then uses a chain of operations to reduce the list of single summaries into a single summary. The `reduce_chain` object is used to invoke the chain of operations and generate the final summary. The summary is stored in the `summary` variable.
-
-Finally, the function returns the generated summary.
+The function returns the generated summary.
 
 **Note**:
-- The `get_first_summarization` function is designed to generate a summary of the first document in a target repository.
-- It relies on the `load_docs` and `split_documents` functions to load and process the documents.
-- The `get_parallel_summary` function is used for parallel processing of the document splits.
+- The get_first_summarization function is designed to generate a summary of the first document in the target repository.
+- It relies on the load_docs, split_documents, and get_parallel_summary functions to load, split, and process the documents.
+- The function assumes that the target repository contains Markdown documents.
 - It is important to ensure that the input documents are structured appropriately for processing by the function.
 
 **Output Example**:
-"Generated summary of the first document in the target repository."
+"Generated summary of the first document."
 ***
