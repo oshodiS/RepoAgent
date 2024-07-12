@@ -81,7 +81,7 @@ def load_docs(path_marksdown):
         abs = os.path.normpath(os.path.abspath(path_marksdown))  # Normalize and convert root_path to an absolute path
 
         for subdir, _, _ in os.walk(abs):
-            loader = DirectoryLoader(os.path.join(abs, subdir), glob="./*.md", show_progress=True, loader_cls=UnstructuredMarkdownLoader)    
+            loader = DirectoryLoader(os.path.join(abs, subdir), glob="./*.md", show_progress=False, loader_cls=UnstructuredMarkdownLoader)    
             docs = loader.load()
             all_docs.extend(docs)
         return all_docs

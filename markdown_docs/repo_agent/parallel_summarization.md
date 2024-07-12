@@ -1,41 +1,36 @@
 ## ClassDef ParallelSummarizator
-**ParallelSummarizator**: The function of ParallelSummarizator is to provide parallel summarization capabilities by utilizing a language model to generate concise summaries and consolidate them into a final summary.
+**ParallelSummarizator**: The function of ParallelSummarizator is to provide parallel summarization capabilities for a set of documents.
 
 **attributes**:
 - path: The path to the documents for summarization.
-- llm: An instance of the ChatOpenAI class for language model processing.
-- docs: Loaded documents from the specified path.
-- stuff_chain: A chain for generating concise summaries of individual documents.
-- reduce_chain: A chain for reducing multiple summaries into a final consolidated summary.
+- llm: An instance of the ChatOpenAI model used for text generation.
+- stuff_chain: A chain for processing individual document summaries.
+- reduce_chain: A chain for consolidating multiple summaries into a final summary.
 
 **Code Description**:
-The ParallelSummarizator class initializes with a path to documents and a model name. It loads the documents, creates chains for generating concise summaries and reducing them, and provides methods for parallel summarization and obtaining the first summarization.
+The ParallelSummarizator class initializes with a path to the documents and a model name. It creates chains for processing individual document summaries and consolidating them into a final summary. The get_parallel_summary method processes multiple documents concurrently using the stuff_chain. The get_first_summarization method loads documents, splits them, generates individual summaries, and then consolidates them into a final summary using the reduce_chain.
 
-The get_stuff_chain method sets up a chain for generating concise summaries based on a prompt template. The get_reduce_chain method prepares a chain for consolidating multiple summaries into a final summary.
+The class utilizes the ChatOpenAI model for text generation and concurrent processing for efficient summarization. It follows a structured approach to summarize documents in parallel, making it suitable for handling large sets of text data.
 
-The get_parallel_summary method processes multiple documents in parallel using the stuff_chain. The get_first_summarization method splits the documents, generates individual summaries in parallel, and then consolidates them into a final summary using the reduce_chain.
+In the project, the ParallelSummarizator is instantiated in the Runner class to summarize documents in a specified folder using the provided model for text generation.
 
-**Note**:
-- Ensure the model_name provided during initialization is compatible with the ChatOpenAI class.
-- The get_first_summarization method may return None if no documents are loaded or processed.
+**Note**: Ensure the necessary dependencies are installed to use the ChatOpenAI model for text generation.
 
 **Output Example**:
-If the get_first_summarization method is called and documents are successfully processed, the output may look like:
-"**Project Description:** A concise summary of the overall contents of the project."
+["Final consolidated summary of the overall contents."]
 ### FunctionDef __init__(self, path, model_name)
-**__init__**: The function of __init__ is to initialize the ParallelSummarizator object with the provided path and model_name, setting up necessary attributes for further processing.
+**__init__**: The function of __init__ is to initialize the ParallelSummarizator object with the provided path and model name, as well as to set up the stuff_chain and reduce_chain attributes.
 
 **parameters**:
-- path: The path to the directory containing the documents.
+- path: The path to the documents for summarization.
 - model_name: The name of the language model to be used for summarization.
 
-**Code Description**:
-The __init__ function initializes the ParallelSummarizator object by assigning the path and model_name parameters to the respective attributes. It then initializes the llm attribute with a ChatOpenAI object using the specified model_name and a temperature of 0.1. The function proceeds to load documents from the provided path using the load_docs function and stores them in the docs attribute. Subsequently, it calls the get_stuff_chain and get_reduce_chain functions to set up the stuff_chain and reduce_chain attributes for further processing within the ParallelSummarizator object.
+**Code Description**: 
+The __init__ function initializes the ParallelSummarizator object by assigning the path and model_name parameters to the respective attributes. It then initializes an instance of the ChatOpenAI class with the specified model_name and a temperature of 0.1. The function proceeds to call the get_stuff_chain method to set up the stuff_chain attribute, which involves creating a StuffDocumentsChain object for further processing. Similarly, the get_reduce_chain method is invoked to initialize the reduce_chain attribute, which generates a summarization chain for efficient document summarization tasks.
 
-The get_stuff_chain function is invoked to create a StuffDocumentsChain object, while the get_reduce_chain function is called to generate a reduce chain for summarization tasks. These chains play a crucial role in the parallel summarization workflow, enabling efficient processing and summarization of documents.
+The __init__ function ensures that the necessary components for document summarization, including the language model, summarization chains, and document paths, are properly set up within the ParallelSummarizator object. This initialization process sets the stage for executing summarization tasks effectively within the parallel summarization workflow.
 
-**Note**:
-Developers using the __init__ function should ensure that the path to the documents and the model_name are provided correctly to initialize the ParallelSummarizator object successfully. Additionally, understanding the purpose of the stuff_chain and reduce_chain attributes is essential for utilizing the summarization capabilities of the ParallelSummarizator object effectively.
+**Note**: Developers utilizing the __init__ function should provide valid paths to the documents and ensure that the specified language model is compatible with the summarization requirements. Additionally, understanding the role of stuff_chain and reduce_chain attributes in the summarization process is crucial for leveraging the capabilities of the ParallelSummarizator object effectively.
 ***
 ### FunctionDef get_stuff_chain(self)
 **get_stuff_chain**: The function of get_stuff_chain is to create a StuffDocumentsChain object by initializing an LLMChain object and returning the stuff_chain.

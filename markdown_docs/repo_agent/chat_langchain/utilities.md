@@ -159,19 +159,18 @@ In the project context, the get_readme_path function is utilized by the load_doc
 **Output Example**:
 If the README.md file is found in the specified repository root directory, the function may return a path like: "/path/to/repository/README.md".
 ## FunctionDef load_docs(path_marksdown)
-**load_docs**: The function of load_docs is to load documents from a specified path by walking through the directory structure, using a DirectoryLoader to load Markdown files, and returning a list of all loaded documents.
+**load_docs**: The function of load_docs is to load documents from a specified path, process each document, and return a list of all loaded documents.
 **parameters**:
-- path_marksdown: The path to the directory containing the Markdown documents.
+- path_marksdown: The path to the directory containing the documents in markdown format.
 
 **Code Description**:
-The load_docs function starts by normalizing and converting the provided path to an absolute path. It then iterates through the directory structure using os.walk on the absolute path. Within each directory, it creates a DirectoryLoader instance to load Markdown files with the specified glob pattern "./*.md" and a UnstructuredMarkdownLoader class. The loaded documents are then added to the all_docs list. Finally, the function returns the aggregated list of all loaded documents.
+The load_docs function begins by normalizing the provided path and converting it to an absolute path. It then iterates through all subdirectories in the specified path, using a DirectoryLoader to load documents with the specified file extension ".md" and loader class UnstructuredMarkdownLoader. The function aggregates all loaded documents into a single list and returns this list.
 
-This function serves as a crucial utility for retrieving and processing Markdown documents within a specified directory structure. By utilizing the DirectoryLoader and UnstructuredMarkdownLoader classes, it ensures efficient loading of documents for further processing or analysis.
+The load_docs function is a crucial utility for retrieving and processing documents stored in markdown format within a specified directory. It facilitates the efficient loading of multiple documents for further analysis or manipulation within the application.
 
 **Note**:
-- Ensure the path provided points to the directory containing Markdown documents.
-- Understand the structure of the loaded documents for subsequent processing.
-- Consider handling any potential errors or exceptions related to file loading operations.
+- Ensure that the path provided contains valid markdown documents for successful loading.
+- Utilize the returned list of documents for subsequent processing or analysis within the application.
 
 **Output Example**:
 [doc1, doc2, doc3, ...]

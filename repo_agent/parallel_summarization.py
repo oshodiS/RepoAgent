@@ -14,7 +14,7 @@ class ParallelSummarizator:
     def __init__(self, path, model_name):
         self.path = path
         self.llm = ChatOpenAI(temperature=0.1, model_name=model_name)
-        self.docs = load_docs(self.path)
+        #self.docs = load_docs(self.path)
         self.stuff_chain = self.get_stuff_chain()
         self.reduce_chain = self.get_reduce_chain()
 
@@ -84,4 +84,3 @@ class ParallelSummarizator:
 
         return summary
         
-   #o
