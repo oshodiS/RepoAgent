@@ -6,11 +6,10 @@ import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
-from repo_agent.chat_langchain import utilities
+
 from colorama import Fore, Style
 from tqdm import tqdm
-#from repo_agent.summarization import Summarizator
-from repo_agent.parallel_summarization import ParallelSummarizator
+
 from repo_agent.change_detector import ChangeDetector
 from repo_agent.chat_engine import ChatEngine
 from repo_agent.doc_meta_info import DocItem, DocItemStatus, MetaInfo, need_to_generate
@@ -24,7 +23,6 @@ from repo_agent.utils.meta_info_utils import delete_fake_files, make_fake_files
 
 class Runner:
     def __init__(self):
-        print(f"Setting:")
         self.absolute_project_hierarchy_path = setting.project.target_repo / setting.project.hierarchy_name
 
         self.project_manager = ProjectManager(
@@ -41,7 +39,7 @@ class Runner:
             self.meta_info.checkpoint(
                 target_dir_path=self.absolute_project_hierarchy_path
             )
-        else: # If the .project_hierarchy folder exists, load from it
+        else: # 如果存在全局结构信息文件夹.project_hierarchy，就从中加载
             self.meta_info = MetaInfo.from_checkpoint_path(
                 self.absolute_project_hierarchy_path
             )
@@ -50,9 +48,6 @@ class Runner:
             target_dir_path=self.absolute_project_hierarchy_path
         )
         self.runner_lock = threading.Lock()
-        markdown_folder = setting.project.target_repo / setting.project.markdown_docs_name
-        self.summarizator = ParallelSummarizator(markdown_folder, setting.chat_completion.model)
-        
 
     def get_all_pys(self, directory):
         """
@@ -74,7 +69,7 @@ class Runner:
         return python_files
 
     def generate_doc_for_a_single_item(self, doc_item: DocItem):
-        """Generate documentation for an object"""
+        """为一个对象生成文档"""
         try:
 
             rel_file_path = doc_item.get_full_name()
@@ -93,8 +88,6 @@ class Runner:
                 self.meta_info.checkpoint(
                     target_dir_path=self.absolute_project_hierarchy_path
                 )
-             
-            
         except Exception as e:
             logger.info(f"Document generation failed after multiple attempts, skipping: {doc_item.get_full_name()}")
             logger.error("Error:", e)
@@ -103,18 +96,16 @@ class Runner:
 
     def first_generate(self):
         """
-        Generate all documents.
-        If the generation is completed, self.meta_info.document_version will become 0 (previously -1).
-        Each time a document for an object is generated, it will be synchronized back to the file system in real-time.
-        If an error occurs in the middle, it will automatically load and continue generating in the file order.
-        **Note**: During this first_generate process, the target repository code cannot be modified.
-        In other words, the generation process of a document must be bound to a specific version of the code.
+        生成所有文档,
+        如果生成结束，self.meta_info.document_version会变成0(之前是-1)
+        每生成一个obj的doc，会实时同步回文件系统里。如果中间报错了，下次会自动load，按照文件顺序接着生成。
+        **注意**：这个生成first_generate的过程中，目标仓库代码不能修改。也就是说，一个document的生成过程必须绑定代码为一个版本。
         """
         logger.info("Starting to generate documentation")
         check_task_available_func = partial(need_to_generate, ignore_list=setting.project.ignore_list)
         task_manager = self.meta_info.get_topology(
             check_task_available_func
-        )  # This will generate documents in the specified order
+        )  # 将按照此顺序生成文档
         # topology_list = [item for item in topology_list if need_to_generate(item, ignore_list)]
         before_task_len = len(task_manager.task_dict)
 
@@ -142,8 +133,7 @@ class Runner:
                 thread.start()
             for thread in threads:
                 thread.join()
-            
-           
+
             self.meta_info.document_version = (
                 self.change_detector.repo.head.commit.hexsha
             )
@@ -151,19 +141,9 @@ class Runner:
             self.meta_info.checkpoint(
                 target_dir_path=self.absolute_project_hierarchy_path
             )
-            
             logger.info(
                 f"Successfully generated {before_task_len - len(task_manager.task_dict)} documents."
             )
-
-            if True: #utilities.get_readme_path(setting.project.target_repo) is None:
-                summary = self.summarizator.get_first_summarization()
-                if summary != None:
-                    summary.replace(". ", ".\n")
-                    summary_file_path = os.path.join(setting.project.target_repo / setting.project.markdown_docs_name, "summary.md")
-            
-                    with open(summary_file_path, "w") as file:
-                        file.write(summary)
 
         except BaseException as e:
             logger.info(
@@ -171,9 +151,9 @@ class Runner:
             )
 
     def markdown_refresh(self):
-        """Write the latest document information to a folder in markdown format (regardless of whether the markdown content has changed)"""
+        """将目前最新的document信息写入到一个markdown格式的文件夹里(不管markdown内容是不是变化了)"""
         with self.runner_lock:
-            # First delete all contents under doc, and then rewrite
+            # 首先删除doc下所有内容，然后再重新写入
             markdown_folder = setting.project.target_repo / setting.project.markdown_docs_name
             if markdown_folder.exists():
                 shutil.rmtree(markdown_folder)  
@@ -184,7 +164,7 @@ class Runner:
 
                 def recursive_check(
                     doc_item: DocItem,
-                ) -> bool:  # Check if there is a doc inside a file
+                ) -> bool:  # 检查一个file内是否存在doc
                     if doc_item.md_content != []:
                         return True
                     for _, child in doc_item.children.items():
@@ -262,21 +242,22 @@ class Runner:
                 target_dir_path=self.absolute_project_hierarchy_path,
                 flash_reference_relation=True,
             ) # 这一步将生成后的meta信息（包含引用关系）写入到.project_doc_record文件夹中
-            return 
+            return
 
         if not self.meta_info.in_generation_process: # 如果不是在生成过程中，就开始检测变更
             logger.info("Starting to detect changes.")
-            """Using a new approach
-            1. Create a new project hierarchy.
-            2. Merge with the old hierarchy, handling the following cases:
-               - Creating a new file: need to generate corresponding documentation.
-               - File or object deletion: corresponding documentation should be deleted (renaming a file is considered as deleting and adding).
-               - Changes in reference relationships: corresponding object documentation needs to be regenerated.
+
+            """采用新的办法
+            1.新建一个project-hierachy
+            2.和老的hierarchy做merge,处理以下情况：
+            - 创建一个新文件：需要生成对应的doc
+            - 文件、对象被删除：对应的doc也删除(按照目前的实现，文件重命名算是删除再添加)
+            - 引用关系变了：对应的obj-doc需要重新生成
             
-            In the merged new_meta_info:
-            1. Newly created files have no documentation, so the meta info remains without documentation after the merge.
-            2. Deleted files and objects are not included in the new meta info, effectively deleting their documentation.
-            3. Only the modified files and the files that need to be notified due to changes in reference relationships should regenerate their documentation."""
+            merge后的new_meta_info中：
+            1.新建的文件没有文档，因此metainfo merge后还是没有文档
+            2.被删除的文件和obj，本来就不在新的meta里面，相当于文档被自动删除了
+            3.只需要观察被修改的文件，以及引用关系需要被通知的文件去重新生成文档"""
             file_path_reflections, jump_files = make_fake_files()
             new_meta_info = MetaInfo.init_meta_info(file_path_reflections, jump_files)
             new_meta_info.load_doc_from_older_meta(self.meta_info)
@@ -325,16 +306,7 @@ class Runner:
 
         # 将run过程中更新的Markdown文件（未暂存）添加到暂存区
         git_add_result = self.change_detector.add_unstaged_files()
-        if True: #utilities.get_readme_path(setting.project.target_repo) is None:
-            summary = self.summarizator.get_first_summarization()
-            print(summary)
-            if summary != None:
-                    summary.replace(". ", ".\n")
-                    summary_file_path = os.path.join(setting.project.target_repo, "summary.md")
-            
-                    with open(summary_file_path, "w") as file:
-                        file.write(summary)
-    
+
         if len(git_add_result) > 0:
             logger.info(f"Added {[file for file in git_add_result]} to the staging area.")
 
@@ -600,7 +572,6 @@ class Runner:
         new_obj = list(current_obj - previous_obj)
         del_obj = list(previous_obj - current_obj)
         return new_obj, del_obj
-    
 
 
 if __name__ == "__main__":

@@ -84,4 +84,4 @@ class ParallelSummarizator:
 
         return summary
         
-   
+   #o

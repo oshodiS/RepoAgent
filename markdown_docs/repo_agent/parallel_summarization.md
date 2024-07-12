@@ -1,31 +1,27 @@
 ## ClassDef ParallelSummarizator
-**ParallelSummarizator**: The function of ParallelSummarizator is to provide parallel summarization capabilities for a set of documents.
+**ParallelSummarizator**: The function of ParallelSummarizator is to provide parallel summarization capabilities by utilizing a language model to generate concise summaries and consolidate them into a final summary.
 
 **attributes**:
-- path: The path to the directory containing the documents to be summarized.
-- model_name: The name of the model used for summarization.
-- llm: An instance of the ChatOpenAI class for language modeling.
-- docs: A list of loaded documents from the specified path.
-- stuff_chain: A chain for processing individual document summaries.
-- reduce_chain: A chain for reducing multiple summaries into a consolidated summary.
+- path: The path to the documents for summarization.
+- llm: An instance of the ChatOpenAI class for language model processing.
+- docs: Loaded documents from the specified path.
+- stuff_chain: A chain for generating concise summaries of individual documents.
+- reduce_chain: A chain for reducing multiple summaries into a final consolidated summary.
 
 **Code Description**:
-The ParallelSummarizator class initializes with the path to the document directory and the model name. It loads the documents, creates chains for processing individual document summaries (stuff_chain) and reducing multiple summaries into a consolidated one (reduce_chain).
+The ParallelSummarizator class initializes with a path to documents and a model name. It loads the documents, creates chains for generating concise summaries and reducing them, and provides methods for parallel summarization and obtaining the first summarization.
 
-The get_stuff_chain method creates a chain for processing individual document summaries based on a prompt template. The get_reduce_chain method creates a chain for reducing multiple summaries into a final consolidated summary.
+The get_stuff_chain method sets up a chain for generating concise summaries based on a prompt template. The get_reduce_chain method prepares a chain for consolidating multiple summaries into a final summary.
 
-The get_parallel_summary method processes a list of documents in parallel using the stuff_chain and returns the individual summaries.
-
-The get_first_summarization method loads the documents, splits them into smaller parts, processes them in parallel using get_parallel_summary, and then reduces the individual summaries into a final consolidated summary using the reduce_chain.
-
-The ParallelSummarizator class integrates language modeling and parallel processing to efficiently summarize a set of documents.
+The get_parallel_summary method processes multiple documents in parallel using the stuff_chain. The get_first_summarization method splits the documents, generates individual summaries in parallel, and then consolidates them into a final summary using the reduce_chain.
 
 **Note**:
-- Ensure the model_name parameter corresponds to a valid language model for summarization.
-- The get_first_summarization method handles document splitting and parallel processing for summarization.
+- Ensure the model_name provided during initialization is compatible with the ChatOpenAI class.
+- The get_first_summarization method may return None if no documents are loaded or processed.
 
 **Output Example**:
-["Project Description: A summary of the project contents and key details."]
+If the get_first_summarization method is called and documents are successfully processed, the output may look like:
+"**Project Description:** A concise summary of the overall contents of the project."
 ### FunctionDef __init__(self, path, model_name)
 **__init__**: The function of __init__ is to initialize the ParallelSummarizator object with the provided path and model_name, setting up necessary attributes for further processing.
 
@@ -109,27 +105,20 @@ It is assumed that the stuff_chain attribute is initialized and contains the nec
 ***
 ***
 ### FunctionDef get_first_summarization(self)
-**get_first_summarization**: The function of get_first_summarization is to generate a summary for the first document in the target repository.
+**get_first_summarization**: The function of get_first_summarization is to process a list of documents, generate summaries for each document split, and then combine these summaries into a single summary.
 
 **parameters**:
 - None
 
-**Code Description**:
-The get_first_summarization function is responsible for generating a summary for the first document in the target repository. It first prints the path of the current object. Then, it calls the load_docs function to load the documents from the specified path. The loaded documents are stored in the self.docs attribute.
+**Code Description**: The get_first_summarization function first loads documents from a specified path using the load_docs function. It then splits each document into smaller chunks, assigns a source metadata to each chunk, and processes all the splits concurrently using the get_parallel_summary function. Finally, it combines the individual summaries into a single summary using a chain of operations.
 
-Next, the function checks if there are any documents loaded. If the length of self.docs is not equal to 0, it proceeds with the summarization process. It initializes an empty list called all_splits to store the splits of the documents.
-
-The function then iterates over each document in self.docs and calls the split_documents function to split the document into smaller chunks. The split_documents function splits the document based on a specified chunk size and overlap. It assigns a source metadata to each split based on the document's filename. The splits are then added to the all_splits list.
-
-After obtaining all the splits, the function calls the get_parallel_summary function to process the splits concurrently. The get_parallel_summary function processes each split using a chain of operations and returns the output text. The results of the parallel processing are stored in the single_summaries list.
-
-Finally, the function uses the reduce_chain object to reduce the single_summaries list into a single summary. The reduced summary is assigned to the summary variable. The function returns the summary.
+The function relies on the load_docs, split_documents, and get_parallel_summary functions to load documents, split them into chunks, and process them concurrently for summarization. By utilizing these functions, get_first_summarization efficiently handles the processing of multiple documents to generate a comprehensive summary.
 
 **Note**:
-- The get_first_summarization function relies on the load_docs, split_documents, and get_parallel_summary functions to load, split, and process the documents.
-- It is important to ensure that the input documents are structured appropriately for processing by the function.
-- The function utilizes parallel processing to improve performance when dealing with a large number of documents.
+- Ensure that the input documents are structured appropriately for processing.
+- The function's performance may vary based on the number and size of input documents.
+- It is essential to understand the flow of document processing within the function to customize it for specific use cases.
 
-**Output Example**:
-"This is the summary of the first document."
+**Output Example**: 
+"Generated single summary text"
 ***
