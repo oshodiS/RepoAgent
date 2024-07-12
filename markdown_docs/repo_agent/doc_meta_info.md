@@ -398,40 +398,44 @@ In the calling context, the function walk_file in the MetaInfo class iterates th
 **Output Example**:
 [('path/to/referencing_file.py', 10, 5), ('path/to/another_file.py', 20, 15)]
 ## ClassDef MetaInfo
-**MetaInfo**: The MetaInfo class is responsible for managing the metadata information related to the documentation generation process. It contains various attributes and methods to handle the initialization, loading, and saving of metadata, as well as parsing reference relationships and generating task lists for document generation.
+**MetaInfo**: The MetaInfo class represents the metadata information for the documentation generation process. It stores various attributes and methods related to the generation and management of documentation.
 
 **Attributes**:
-- `repo_path`: A string representing the path of the target repository.
+- `repo_path`: A string representing the path to the target repository.
 - `document_version`: A string representing the version of the document. It is updated with the commit hash of the target repository.
-- `target_repo_hierarchical_tree`: A DocItem object representing the hierarchical structure of the target repository.
+- `target_repo_hierarchical_tree`: A DocItem object representing the hierarchical structure of the repository.
 - `white_list`: A list of objects to be included in the documentation generation process.
 - `fake_file_reflection`: A dictionary mapping fake file paths to their corresponding real file paths.
-- `jump_files`: A list of file paths that are not tracked by the version control system.
-- `deleted_items_from_older_meta`: A list of items (files, directories, or objects) that have been deleted from the previous metadata.
-- `in_generation_process`: A boolean flag indicating whether the documentation generation process is in progress.
-- `checkpoint_lock`: A threading lock used to synchronize the checkpoint operation.
+- `jump_files`: A list of file paths that are skipped during the documentation generation process.
+- `deleted_items_from_older_meta`: A list of items (directories, files, or objects) that have been deleted from the previous version of the metadata.
+- `in_generation_process`: A boolean value indicating whether the documentation generation process is currently in progress.
+- `checkpoint_lock`: A threading lock used to ensure thread safety during the checkpointing process.
 
 **Methods**:
-- `init_meta_info(file_path_reflections, jump_files)`: Initializes the MetaInfo object from a target repository path. It generates the overall structure of the repository and sets the fake file reflections and jump files.
-- `from_checkpoint_path(checkpoint_dir_path)`: Loads the MetaInfo object from a checkpoint directory path. It reads the project hierarchy and metadata from the checkpoint files.
-- `checkpoint(target_dir_path, flash_reference_relation=False)`: Saves the MetaInfo object to the specified directory. It writes the project hierarchy and metadata to the checkpoint files.
-- `print_task_list(task_dict)`: Prints the task list with detailed information, including the task ID, generation reason, path, and dependencies.
+- `init_meta_info(file_path_reflections, jump_files)`: Initializes the MetaInfo object from a repository path by generating the overall structure and setting the fake file reflections and jump files.
+- `from_checkpoint_path(checkpoint_dir_path)`: Loads the MetaInfo object from a checkpoint directory path, including the project hierarchy and metadata.
+- `checkpoint(target_dir_path, flash_reference_relation=False)`: Saves the MetaInfo object to the specified directory, including the project hierarchy and metadata.
+- `print_task_list(task_dict)`: Prints the remaining tasks to be done during the documentation generation process.
 - `get_all_files()`: Returns a list of all file nodes in the repository.
-- `find_obj_with_lineno(file_node, start_line_num)`: Finds the object in the repository hierarchy based on the file node and the starting line number.
+- `find_obj_with_lineno(file_node, start_line_num)`: Finds the object in the repository hierarchy that corresponds to the given file node and starting line number.
 - `parse_reference()`: Parses the bidirectional reference relationships between objects in the repository.
-- `get_task_manager(now_node, task_available_func)`: Generates a task manager for the given node and task availability function. It determines the order of document generation based on the topological relationship between objects.
-- `get_topology(task_available_func)`: Calculates the topological order of all objects in the repository based on the task availability function.
-- `load_doc_from_older_meta(older_meta)`: Loads the documentation from an older version of the metadata. It merges the documentation from the older version with the current version, handling file and object deletions, changes in reference relationships, and code modifications.
-- `from_project_hierarchy_path(repo_path)`: Loads the MetaInfo object from the project hierarchy JSON file in the target repository.
-- `to_hierarchy_json(flash_reference_relation=False)`: Converts the document metadata to a hierarchical JSON representation.
-- `from_project_hierarchy_json(project_hierarchy_json)`: Creates a MetaInfo object from the project hierarchy JSON representation.
+- `get_task_manager(now_node, task_available_func)`: Returns a TaskManager object that manages the tasks for generating documentation based on the given node and task availability function.
+- `get_topology(task_available_func)`: Calculates the topological order of objects in the repository based on the task availability function.
+- `load_doc_from_older_meta(older_meta)`: Loads the documentation from the older version of the metadata and merges it with the current metadata.
+- `from_project_hierarchy_path(repo_path)`: Creates a MetaInfo object from the project hierarchy JSON file.
+- `to_hierarchy_json(flash_reference_relation=False)`: Converts the metadata to a hierarchical JSON representation.
+- `from_project_hierarchy_json(project_hierarchy_json)`: Creates a MetaInfo object from the project hierarchy JSON dictionary.
 
 **Code Description**:
-The MetaInfo class is an essential component of the documentation generation process. It manages the metadata information related to the documentation, including the repository path, document version, target repository hierarchical tree, white list, fake file reflections, jump files, deleted items from the older metadata, and the flag indicating the generation process.
+The MetaInfo class is responsible for managing the metadata information related to the documentation generation process. It contains attributes to store information such as the repository path, document version, repository hierarchy, white list, fake file reflections, jump files, deleted items from the older metadata, and the status of the generation process.
 
-The class provides methods for initializing the metadata from a target repository path, loading and saving the metadata from a checkpoint directory, printing the task list, getting all file nodes in the repository, finding objects based on file nodes and line numbers, parsing reference relationships, generating a task manager, calculating the topological order of objects, merging documentation from an older version, and converting the metadata to a hierarchical JSON representation.
+The class provides methods to initialize the metadata from a repository path, load the metadata from a checkpoint directory, save the metadata to a directory, print the remaining tasks, get all file nodes in the repository, find the object corresponding to a file node and line number, parse the bidirectional reference relationships, calculate the topological order of objects, merge the documentation from the older metadata, convert the metadata to a hierarchical JSON representation, and create a MetaInfo object from the project hierarchy JSON.
 
-The `init_meta_info` method initializes the MetaInfo object by generating the overall structure of the repository and setting the fake file reflections and jump files. The `from_checkpoint_path` method loads the MetaInfo object from a checkpoint directory by reading the project hierarchy and metadata from the checkpoint files. The `checkpoint` method saves the MetaInfo object to the specified directory by writing the project hierarchy and metadata to the checkpoint files. The `print_task_list` method prints the task list with detailed information about each task. The `get_all_files` method returns a list of all file nodes in the repository. The `find_obj_with_lineno` method finds the object in the repository hierarchy based on the file node and the starting line number. The `parse_reference` method parses the bidirectional reference relationships between objects in the repository. The `get_task_manager` method generates a task manager for the given node and task availability function, determining the order of document generation. The `get_topology` method calculates the topological order of all objects in the repository based on the task availability function. The `load_doc_from_older_meta` method merges the
+The MetaInfo class plays a crucial role in managing the documentation generation process. It handles the detection of changes in the repository, generates and updates the documentation based on the changes, and maintains the metadata information for efficient generation and management of the documentation.
+
+**Note**: The MetaInfo class is used in conjunction with other classes and functions in the repository agent project to facilitate the generation and management of documentation. It is designed to be thread-safe and supports multi-threaded documentation generation.
+
+**Output Example**: N/A
 ### FunctionDef init_meta_info(file_path_reflections, jump_files)
 **init_meta_info**: The function of `init_meta_info` is to initialize the `MetaInfo` object by parsing the file structure and generating the hierarchical representation of the target repository.
 
@@ -486,26 +490,25 @@ A MetaInfo object representing the meta-information loaded from the specified ch
 - flash_reference_relation (bool, optional): Whether to include flash reference relation in the saved MetaInfo. Defaults to False.
 
 **Code Description**:
-The `checkpoint` function is responsible for saving the `MetaInfo` object to the specified directory. It first acquires a lock to ensure thread safety during the saving process. Then, it creates the target directory if it does not already exist. 
+The `checkpoint` function is responsible for saving the MetaInfo object to the specified directory. It performs several operations to store the MetaInfo and related information.
 
-Next, it calls the `to_hierarchy_json` function of the `MetaInfo` object to obtain a hierarchical JSON representation of the document metadata. This representation includes information such as the object's name, type, content, markdown content, and status. If the `flash_reference_relation` parameter is set to `True`, it also includes bidirectional reference relations in the JSON output.
+First, the function acquires a lock using the `checkpoint_lock` attribute to ensure thread safety during the saving process. This prevents multiple threads from accessing and modifying the MetaInfo simultaneously.
 
-The function then writes the obtained hierarchical JSON representation to a file named "project_hierarchy.json" in the target directory. Additionally, it writes other metadata, such as the document version, in a separate file named "meta-info.json".
+Next, the function prints a message indicating that the MetaInfo is being refreshed and saved. This serves as a visual confirmation for developers.
 
-**Note**: Developers can use this function to save the `MetaInfo` object and its associated metadata to a specified directory. This allows for easy retrieval and storage of document information.
+The function then checks if the target directory exists. If it does not, the function creates the directory using the `os.makedirs` method.
 
-**Output Example**:
-The output of the `checkpoint` function is a saved representation of the `MetaInfo` object and its associated metadata in the specified target directory. The saved files include "project_hierarchy.json" and "meta-info.json".
+Afterward, the function calls the `to_hierarchy_json` method of the MetaInfo object to convert the document metadata to a hierarchical JSON representation. This method retrieves information about each file node in the metadata and constructs a structured JSON representation. The `flash_reference_relation` parameter determines whether to include bidirectional reference relations in the JSON output.
 
-**Note**: The actual content of the saved files will depend on the specific document metadata and settings used.
+The resulting hierarchical JSON representation is then written to a file named "project_hierarchy.json" in the target directory. This is achieved by opening the file in write mode using the `open` function, and then using the `json.dump` method to write the JSON data to the file. The `indent` parameter is set to 2 to format the JSON with indentation, and the `ensure_ascii` parameter is set to False to preserve non-ASCII characters.
 
-**Note**: It is important to ensure that the target directory exists before calling this function, as it will not create the directory automatically.
+Additionally, the function saves specific meta information to a separate file named "meta-info.json" in the target directory. This file contains information such as the document version, generation process status, fake file reflection, jump files, and deleted items from older meta. The meta information is stored in a dictionary and written to the file using the same process as the project hierarchy JSON file.
 
-**Note**: The `flash_reference_relation` parameter is optional and defaults to `False`. When set to `True`, it includes bidirectional reference relations in the saved MetaInfo. Developers can choose to enable this option based on their specific requirements.
+Overall, the `checkpoint` function ensures that the MetaInfo object and related information are saved to the specified directory in a structured manner. This allows developers to persist and access the document metadata for future use.
 
-**Note**: The `checkpoint` function utilizes the `to_hierarchy_json` function to generate a hierarchical JSON representation of the document metadata. Developers should ensure that the `to_hierarchy_json` function is properly implemented and returns the expected JSON structure.
+**Note**: Developers can use this function to save the MetaInfo object and associated metadata to a directory. This can be useful for storing and retrieving document information, such as object details, references, and version history.
 
-**Note**: The `checkpoint` function uses the `json` module to write the hierarchical JSON representation and other metadata to the respective files. Developers should ensure that the `json` module is available and properly imported before using this function.
+**Note**: The `checkpoint` function relies on the `to_hierarchy_json` method to convert the document metadata to a hierarchical JSON representation. It is recommended to call the `checkpoint` function after making any changes to the MetaInfo object to ensure that the updated information is saved.
 ***
 ### FunctionDef print_task_list(self, task_dict)
 **print_task_list**: The function of print_task_list is to display a table of task information including task ID, generation reason, path, and dependencies.

@@ -18,42 +18,42 @@ The `LogLevel` class ensures that only valid log levels are accepted, providing 
 **Note**:
 Developers can use the `LogLevel` class to access predefined log levels and ensure consistency in log level references throughout the project.
 ## ClassDef ProjectSettings
-**ProjectSettings**: The function of ProjectSettings is to define and manage various settings related to a project, such as the target repository path, project hierarchy name, language, log level, and other configuration parameters.
+**ProjectSettings**: The function of ProjectSettings is to define and manage various settings related to a project, including the target repository path, project hierarchy name, Markdown documents folder name, files or directories to ignore, language, maximum thread count, maximum document tokens, and log level.
 
 **attributes**:
-- target_repo: DirectoryPath
-- hierarchy_name: str
-- markdown_docs_name: str
-- ignore_list: list[str]
-- language: str
-- max_thread_count: PositiveInt
-- max_document_tokens: PositiveInt
-- log_level: LogLevel
+- target_repo: A string representing the path to the target repository.
+- hierarchy_name: A string representing the name of the project hierarchy file.
+- markdown_docs_name: A string representing the name of the folder to store the generated Markdown documents.
+- ignore_list: A list of strings representing the files or directories to ignore during documentation generation.
+- language: A string representing the language used for the documentation.
+- max_thread_count: A positive integer representing the maximum number of threads.
+- max_document_tokens: A positive integer representing the maximum number of document tokens.
+- log_level: An instance of the LogLevel class representing the log level for the program.
 
 **Code Description**:
-The `ProjectSettings` class serves as a configuration container for project-specific settings. It inherits from `BaseSettings` and includes attributes for defining settings like the target repository path, project hierarchy name, language, log level, and other parameters.
+The `ProjectSettings` class is a subclass of the `BaseSettings` class. It defines and manages various settings related to a project. Each setting is represented as a class attribute with a corresponding default value.
 
-The class provides default values for some settings and includes methods for serializing and validating specific fields. For instance, the `serialize_ignore_list` method ensures that the `ignore_list` attribute is set to an empty list if the input is empty. The `validate_language_code` method validates the language input against a predefined list of language codes or names.
+The `target_repo` attribute represents the path to the target repository. The `hierarchy_name` attribute represents the name of the project hierarchy file. The `markdown_docs_name` attribute represents the name of the folder to store the generated Markdown documents. The `ignore_list` attribute is a list of strings representing the files or directories to ignore during documentation generation. The `language` attribute represents the language used for the documentation. The `max_thread_count` attribute is a positive integer representing the maximum number of threads. The `max_document_tokens` attribute is a positive integer representing the maximum number of document tokens. The `log_level` attribute is an instance of the `LogLevel` class representing the log level for the program.
 
-Additionally, the class utilizes field serializers and validators to handle specific data transformations and validations. For example, the `serialize_target_repo` method converts the `target_repo` attribute to a string representation.
+The `ProjectSettings` class also includes two methods: `serialize_ignore_list` and `serialize_target_repo`. The `serialize_ignore_list` method is a field serializer that ensures the `ignore_list` attribute is always set to an empty list if it is empty. The `serialize_target_repo` method is a field serializer that converts the `target_repo` attribute to a string representation.
 
-In the project, the `ProjectSettings` class is used during the configuration process in the `configure` function to collect and validate user input for project settings. It plays a crucial role in initializing the project environment with the specified parameters before running the program.
+The `ProjectSettings` class is used in the project to store and manage the project-specific settings. It is instantiated with the desired values for each setting, either through user input in the `configure` function or through program arguments in the `run` function. The settings stored in the `ProjectSettings` instance are used throughout the project to control the behavior of the documentation generation process.
 
 **Note**:
-Developers can customize the project settings by modifying the attributes of the `ProjectSettings` class according to their requirements. The class ensures that the project operates with the desired configurations set by the user.
+- Developers can customize the values of the attributes in the `ProjectSettings` class according to their project requirements.
+- The `serialize_ignore_list` method ensures that the `ignore_list` attribute is always set to an empty list if it is empty, providing a consistent representation of the attribute.
+- The `serialize_target_repo` method converts the `target_repo` attribute to a string representation, allowing for consistent handling of the attribute in the project.
+- The `ProjectSettings` class is used in conjunction with other classes and functions in the project to configure and control the behavior of the documentation generation process.
 
 **Output Example**:
 ```python
-project_settings = ProjectSettings(
-    target_repo="/path/to/repository",
-    hierarchy_name=".project_doc_record",
-    markdown_docs_name="markdown_docs",
-    ignore_list=[],
-    language="English",
-    max_thread_count=4,
-    max_document_tokens=1024,
-    log_level=LogLevel.INFO
-)
+settings = ProjectSettings()
+print(settings.target_repo)
+# Output: ""
+
+settings.target_repo = "/path/to/repository"
+print(settings.target_repo)
+# Output: "/path/to/repository"
 ```
 ### FunctionDef serialize_ignore_list(self, ignore_list)
 **serialize_ignore_list**: The function of serialize_ignore_list is to handle a list of strings and return a modified list based on certain conditions.

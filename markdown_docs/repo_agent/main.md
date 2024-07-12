@@ -51,36 +51,47 @@ The `configure` function is called within the project's main program logic, typi
 - The `write_config` function is responsible for updating the configuration file with the new settings. Refer to the documentation for `write_config` for more details on its functionality and usage.
 - The success messages logged by the `logger.success` method indicate that the project and chat completion settings were saved successfully.
 ## FunctionDef run(model, temperature, request_timeout, base_url, target_repo_path, hierarchy_path, markdown_docs_path, ignore_list, language, log_level)
-**run**: The function of run is to execute the program with the specified parameters.
+**run**: The `run` function is responsible for executing the main program logic with the specified parameters.
 
 **parameters**:
-- model: A string representing the model to be used for chat completion.
-- temperature: A positive float value indicating the randomness of the chat completion responses.
-- request_timeout: A positive float value representing the timeout duration for API requests.
-- base_url: A URL string specifying the base URL for API requests.
-- target_repo_path: The path to the target repository.
-- hierarchy_path: The name of the project hierarchy.
-- markdown_docs_path: The name of the folder to store the generated markdown documentation.
-- ignore_list: A list of strings representing the objects to be ignored during documentation generation.
-- language: The language used for the documentation.
-- log_level: The log level for the program.
+- `model`: A string representing the model to be used for chat completion.
+- `temperature`: A positive float value indicating the randomness of the chat completion responses.
+- `request_timeout`: A positive float value representing the timeout duration for API requests.
+- `base_url`: A URL string specifying the base URL for API requests.
+- `target_repo_path`: A string representing the path to the target repository.
+- `hierarchy_path`: A string representing the name of the project hierarchy file.
+- `markdown_docs_path`: A string representing the name of the folder to store the generated Markdown documents.
+- `ignore_list`: A list of strings representing the files or directories to ignore during documentation generation.
+- `language`: A string representing the language used for the documentation.
+- `log_level`: An instance of the LogLevel class representing the log level for the program.
 
 **Code Description**:
-The `run` function starts by initializing the `start` variable with the current time. It then creates an instance of the `ProjectSettings` class, passing the target repository path, project hierarchy name, markdown documentation folder name, ignore list, language, and log level as parameters. Similarly, it creates an instance of the `ChatCompletionSettings` class, passing the model, temperature, request timeout, and base URL as parameters.
+The `run` function starts by recording the start time using the `time` module. It then initializes the `project_settings` object with the provided parameters, including the target repository path, project hierarchy name, Markdown documents folder name, ignore list, language, and log level.
 
-Next, the function creates an instance of the `Setting` class, combining the project and chat completion settings. It calls the `write_config` function from the `config_manager.py` module to update the existing configuration with the new settings and write it back to a file. It also calls the `set_logger_level_from_config` function from the `log.py` module to set the logger level based on the project settings.
+Next, the function creates a `chat_completion_settings` object with the provided model, temperature, request timeout, and base URL.
 
-After the configuration is updated and the logger level is set, the function creates an instance of the `Runner` class. It then calls the `run` method of the `Runner` object to start the document generation process. Once the process is completed, it logs a success message indicating that the documentation task is completed. Finally, the function calculates the elapsed time and logs it.
+The `settings` object is then created, combining the `project_settings` and `chat_completion_settings` objects.
 
-**Relationship with Callers**:
-The `run` function is called by the `main.py` module's `run` function, which serves as the entry point for running the program. It is responsible for initializing the necessary settings, updating the configuration, and executing the document generation process.
+The function proceeds to write the configuration settings to a file using the `write_config` function from the `config_manager.py` module. This ensures that the program settings are saved for future use.
+
+The log level for the logger is set based on the `log_level` parameter using the `set_logger_level_from_config` function from the `log.py` module.
+
+A `runner` object is instantiated from the `Runner` class.
+
+The `run` method of the `runner` object is called, which performs the main document update process. This includes generating and updating documentation for the target repository, detecting changes in the repository, and running the document update process.
+
+After the document update process is completed, a success message is logged using the `logger` object.
+
+Finally, the elapsed time is calculated and logged using the `logger` object.
 
 **Note**:
-- It is important to provide valid values for the parameters to ensure the proper execution of the program.
-- The `write_config` function updates the configuration file with the new settings, allowing for dynamic changes to the application's settings without losing previous configurations.
-- The `set_logger_level_from_config` function sets the logger level based on the project settings, allowing for customized logging behavior.
-- The `Runner` class is responsible for generating and updating documentation for the target repository, and the `run` method is the entry point for running the document update process.
-- The elapsed time is calculated to provide information about the execution time of the document generation process.
+- Ensure that the provided parameters are valid and appropriate for the intended use.
+- The `write_config` function is responsible for updating the configuration file with the provided settings.
+- The `set_logger_level_from_config` function sets the log level for the logger based on the provided configuration.
+- The `Runner` class is responsible for managing the document generation and update process.
+- The `run` method of the `Runner` class handles the main logic for generating and updating documentation.
+- The `logger` object is used to log messages and provide information about the document generation process.
+- The elapsed time is calculated to provide an indication of the time taken for the document generation process.
 ## FunctionDef clean
 **clean**: The function of clean is to clean the fake files generated by the documentation process.
 
@@ -167,10 +178,8 @@ Ensure that the markdown documents and project hierarchy file are available at t
 - chunk_overlap: The number of characters to overlap between consecutive chunks.
 
 **Code Description**:
-The show_chunk function first prints the chunk size and overlap values. It then accesses the markdown_folder and hierarchy_file paths based on the project settings. If the markdown_folder exists, it initializes a SpecificModel object with the provided parameters and retrieves chunked documents using the get_chunk_docs function. The resulting chunks are saved to a file named "chunking_result.txt" along with a sequential numbering and the content of each chunk. Finally, a log message is generated to indicate the successful saving of the chunking result.
-
-The show_chunk function demonstrates the process of chunking documents and serves as a bridge between the SpecificModel class and the document chunking functionality in the project. By utilizing the SpecificModel and get_chunk_docs, it showcases how documents can be segmented into manageable chunks for further analysis or processing.
+The show_chunk function takes the chunk_size and chunk_overlap parameters to display the chunking process of a document. It utilizes the SpecificModel class to get the chunked documents using the get_chunk_docs function. The chunking result is then saved to a file named "chunking_result.txt" for further reference. This function provides a way to visualize and store the chunked content of documents efficiently.
 
 **Note**:
 - Ensure to set appropriate values for chunk_size and chunk_overlap to control the chunking process effectively.
-- The chunking result is saved in a file named "chunking_result.txt" for reference or further analysis.
+- The output of the show_chunk function can be used for various purposes such as text analysis or data processing.
