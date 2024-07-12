@@ -76,32 +76,17 @@ def get_readme_path(root_path):
                 return os.path.join(root, file)
     return None
 
-def load_docs(path_markdown):
-    """
-    Load all Markdown files from the given directory and its subdirectories.
-
-    Parameters:
-    path_markdown (str): The path to the directory containing Markdown files.
-
-    Returns:
-    list: A list of documents loaded from the Markdown files.
-    """
-    all_docs = []
-    abs_path = os.path.normpath(os.path.abspath(path_markdown))  # Normalize and convert to an absolute path
-    path = "C:\\Users\\reply\\RepoAgent\\markdown_docs"
-    try:
-        for subdir, _, _ in os.walk(path):
-            try:
-                # Instantiate the loader for each subdirectory
-                loader = DirectoryLoader(os.path.join(path, subdir), glob="*.md", show_progress=False, loader_cls=UnstructuredMarkdownLoader)
-                docs = loader.load()
-                all_docs.extend(docs)
-                return all_docs
-            except Exception as e:
-                print(f"Error loading documents from {subdir}: {e}")
+def load_docs(path_marksdown):
+        all_docs = []
+        abs = os.path.abspath(path_marksdown)  # Normalize and convert root_path to an absolute path
+        for subdir, _, _ in os.walk(abs):
+                    try:
+                        # Instantiate the loader for each subdirectory
+                        loader = DirectoryLoader(subdir, glob="*.md", show_progress=False, loader_cls=UnstructuredMarkdownLoader)
+                        docs = loader.load()
+                        all_docs.extend(docs)
+                    except Exception as e:
+                        print(f"Error loading documents from {subdir}: {e}")
 
         return all_docs
-    except Exception as e:
-        print(f"Error walking directory tree: {e}")
-        return []
 

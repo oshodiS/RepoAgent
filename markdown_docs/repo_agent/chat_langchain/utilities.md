@@ -142,37 +142,37 @@ This function is called within the set_chain methods of both GeneralModel and Sp
 **Output Example**: 
 "Repeat the question as it is. Do NOT add requests for additional information or clarification if not in the original question. Do NOT answer the question."
 ## FunctionDef get_readme_path(root_path)
-**get_readme_path**: The function of get_readme_path is to retrieve the path of the README.md file in the specified repository root directory.
+**get_readme_path**: The function of get_readme_path is to retrieve the path of the README.md file in the root directory of a repository.
+
 **parameters**:
-- root_path: The root directory path of the repository.
+- root_path: The root path of the repository.
 
 **Code Description**:
-The get_readme_path function starts by compiling a regular expression pattern to match README.md or README.txt files in a case-insensitive manner. It then normalizes and obtains the absolute path of the root directory. By traversing the directory structure using os.walk, the function searches for files that match the specified pattern. If a matching file is found, the function returns the full path to that file. If no matching file is found, it returns None.
+The get_readme_path function uses a regular expression pattern to match the README.md file in the specified root directory. It normalizes and obtains the absolute path of the root directory. Then, it iterates through the files in the directory using os.walk and checks for a file that matches the pattern. If a match is found, the function returns the full path of the README.md file. If no match is found, it returns None.
 
-In the project context, the get_readme_path function is utilized by the load_docs method in the GeneralModel class to determine the path of the README.md file in the repository. This path is crucial for loading documents for further processing within the GeneralModel instance.
+This function is utilized in various parts of the project to locate the README.md file within a repository, ensuring the availability of essential documentation for further processing tasks.
 
 **Note**:
-- It is essential to ensure that the README.md file follows the expected naming conventions for successful path retrieval.
-- The root_path parameter should point to the root directory of the repository for accurate path determination.
-- Proper initialization of the GeneralModel instance is necessary before invoking the load_docs method to ensure correct document loading.
+- It is crucial to ensure that the README.md file is correctly named and located in the root directory for successful path retrieval.
+- The get_readme_path function is commonly called during the initialization of objects to access repository documentation.
+- Developers can verify the returned path by invoking the function with the root path parameter and checking the output for the README.md file path.
 
 **Output Example**:
-If the README.md file is found in the specified repository root directory, the function may return a path like: "/path/to/repository/README.md".
-## FunctionDef load_docs(path_markdown)
-**load_docs**: The function of load_docs is to load all Markdown files from the given directory and its subdirectories.
+If the README.md file is found in the root directory, the function may return: "C:/project/repository/README.md". If the file is not found, it will return None.
+## FunctionDef load_docs(path_marksdown)
+**load_docs**: The function of load_docs is to load documents from a specified path, process each subdirectory to instantiate a loader, and handle any loading errors that may occur during the process.
 
 **parameters**:
-- path_markdown (str): The path to the directory containing Markdown files.
+- path_marksdown: The path to the directory containing the documents.
 
-**Code Description**: 
-The load_docs function takes a path to a directory containing Markdown files as input. It normalizes the path and then attempts to walk through the directory and its subdirectories to load all Markdown files. It instantiates a loader for each subdirectory, loads the documents, and extends the list of all loaded documents. Any errors encountered during the loading process are caught and printed. The function returns a list of all documents loaded from the Markdown files.
+**Code Description**:
+The load_docs function begins by converting the given path to an absolute path for normalization. It then iterates through each subdirectory using os.walk, instantiates a DirectoryLoader for each subdirectory with specific parameters, loads the documents using the loader, and appends the loaded documents to a list. In case of any exceptions during the loading process, the function captures and prints the error message. Finally, it returns a list containing all the loaded documents.
 
-In the project, the load_docs function is utilized by various objects such as SpecificModel and ParallelSummarizator to load documents for further processing. In SpecificModel, it is used during initialization to load documents for vector store setup and retriever creation. In ParallelSummarizator, it is used to load documents for summarization tasks.
+The load_docs function serves as a crucial component in the document loading process, ensuring that documents are efficiently loaded and processed from the specified directory path. It plays a vital role in facilitating the retrieval and utilization of documents within the application context.
 
-**Note**: 
-- Ensure the path provided leads to the correct directory containing Markdown files.
-- Handle any potential errors that may occur during the loading process.
-- Utilize the returned list of documents for subsequent processing tasks.
+**Note**:
+- Ensure the path provided is valid and contains the necessary documents for loading.
+- Handle any potential loading errors gracefully to maintain the stability of the document loading process.
 
 **Output Example**: 
-["Document 1 content", "Document 2 content", ...]
+[doc1, doc2, doc3, ...]

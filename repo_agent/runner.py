@@ -50,9 +50,7 @@ class Runner:
             target_dir_path=self.absolute_project_hierarchy_path
         )
         self.runner_lock = threading.Lock()
-        markdown_folder = setting.project.target_repo / setting.project.markdown_docs_name
-        self.summarizator = ParallelSummarizator(markdown_folder, setting.chat_completion.model)
-        
+      
 
     def get_all_pys(self, directory):
         """
@@ -155,15 +153,17 @@ class Runner:
             logger.info(
                 f"Successfully generated {before_task_len - len(task_manager.task_dict)} documents."
             )
-
-            # if utilities.get_readme_path(setting.project.target_repo) is None:
-            #     summary = self.summarizator.get_first_summarization()
-            #     if summary != None:
-            #         summary.replace(". ", ".\n")
-            #         summary_file_path = os.path.join(setting.project.target_repo / setting.project.markdown_docs_name, "summary.md")
+            markdown_folder = setting.project.target_repo / setting.project.markdown_docs_name
+            self.summarizator = ParallelSummarizator(markdown_folder, setting.chat_completion.model)
+        
+            if utilities.get_readme_path(setting.project.target_repo) is None:
+                summary = self.summarizator.get_first_summarization()
+                if summary != None:
+                    summary.replace(". ", ".\n")
+                    summary_file_path = os.path.join(setting.project.target_repo / setting.project.markdown_docs_name, "summary.md")
             
-            #         with open(summary_file_path, "w") as file:
-            #             file.write(summary)
+                    with open(summary_file_path, "w") as file:
+                        file.write(summary)
 
         except BaseException as e:
             logger.info(
