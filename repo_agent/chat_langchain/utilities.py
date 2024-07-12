@@ -78,10 +78,11 @@ def get_readme_path(root_path):
 
 def load_docs(path_marksdown):
         all_docs = []
-        abs = os.path.normpath(os.path.abspath(path_marksdown))  # Normalize and convert root_path to an absolute path
+        #abs = os.path.normpath(os.path.abspath(path_marksdown))  # Normalize and convert root_path to an absolute path
 
-        for subdir, _, _ in os.walk(abs):
+        for subdir, _, _ in os.walk(path_marksdown):
             loader = DirectoryLoader(os.path.join(abs, subdir), glob="./*.md", show_progress=False, loader_cls=UnstructuredMarkdownLoader)    
             docs = loader.load()
             all_docs.extend(docs)
         return all_docs
+
