@@ -158,19 +158,21 @@ In the project context, the get_readme_path function is utilized by the load_doc
 
 **Output Example**:
 If the README.md file is found in the specified repository root directory, the function may return a path like: "/path/to/repository/README.md".
-## FunctionDef load_docs(path_marksdown)
-**load_docs**: The function of load_docs is to load documents from a specified directory path and return a list of all the loaded documents.
+## FunctionDef load_docs(path_markdown)
+**load_docs**: The function of load_docs is to load all Markdown files from the given directory and its subdirectories.
+
 **parameters**:
-- path_marksdown: The path to the directory containing the documents.
+- path_markdown (str): The path to the directory containing Markdown files.
 
-**Code Description**:
-The load_docs function iterates through the directory specified by path_marksdown using os.walk. It then utilizes a DirectoryLoader to load documents from each subdirectory within the specified path. The loaded documents are appended to the all_docs list, which is returned upon completion.
+**Code Description**: 
+The load_docs function takes a path to a directory containing Markdown files as input. It normalizes the path and then attempts to walk through the directory and its subdirectories to load all Markdown files. It instantiates a loader for each subdirectory, loads the documents, and extends the list of all loaded documents. Any errors encountered during the loading process are caught and printed. The function returns a list of all documents loaded from the Markdown files.
 
-In the project, load_docs is called by the __init__ method of the SpecificModel class in specific_model.py. Within the __init__ method, load_docs is used to load documents from the provided path, enabling the initialization of the SpecificModel object with the necessary document data for subsequent processing steps.
+In the project, the load_docs function is utilized by various objects such as SpecificModel and ParallelSummarizator to load documents for further processing. In SpecificModel, it is used during initialization to load documents for vector store setup and retriever creation. In ParallelSummarizator, it is used to load documents for summarization tasks.
 
-**Note**:
-- Ensure the path_marksdown parameter points to a valid directory containing the desired documents.
-- The returned all_docs list contains all the loaded documents for further processing.
+**Note**: 
+- Ensure the path provided leads to the correct directory containing Markdown files.
+- Handle any potential errors that may occur during the loading process.
+- Utilize the returned list of documents for subsequent processing tasks.
 
-**Output Example**:
-[doc1, doc2, doc3, ...]
+**Output Example**: 
+["Document 1 content", "Document 2 content", ...]
