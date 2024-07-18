@@ -197,8 +197,11 @@ The RepoAgent hook will automatically trigger at git commit, detect the files yo
 
 After execution, RepoAgent will automatically modify the staged files in the target repository and formally submit the commit. 
 The generated document will be stored in the specified folder in the root directory of the target warehouse. 
-We utilized the default model **gpt-3.5-turbo** to generate documentation for the [**XAgent**](https://github.com/OpenBMB/XAgent) project, which comprises approximately **270,000 lines** of code. You can view the results of this generation in the Markdown_Docs directory of the XAgent project on GitHub. For enhanced documentation quality, we suggest considering more advanced models like **gpt-4-1106** or **gpt-4-0125-preview**.
 
+To avoid automatic generation of documentation the users can use the flag --no-verify as shown below.
+```sh
+git commit -m "your commit message" --no-verify
+```
 **In the end, you can flexibly adjust the output format, template, and other aspects of the document by customizing the prompt. We are excited about your exploration of a more scientific approach to Automated Technical Writing and your contributions to the community.** 
 
 ### Exploring chat with repo

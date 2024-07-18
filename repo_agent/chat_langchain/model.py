@@ -32,13 +32,23 @@ class Model:
         vectorstore = Chroma.from_documents(documents=summary_splits, embedding=OpenAIEmbeddings(), collection_name=collection_name)
         self.vectorstore = vectorstore
     
-    
-    def get_session_history(self,session_id: str) -> BaseChatMessageHistory:
-        """Get the chat history for a session. If the session does not exist, create it."""
+    def get_session_history(self, session_id: str) -> BaseChatMessageHistory:
+        max_messages = 3
         if session_id not in Model.store:
             Model.store[session_id] = ChatMessageHistory()
-       # print(self.store[session_id])
+        
+        old_messages = Model.store[session_id].messages
+        if len(old_messages) > max_messages*2:
+            Model.store[session_id].clear()
+            c = 0 
+            for message in old_messages[-2*(max_messages):]:
+                if c % 2 == 0:
+                    Model.store[session_id].add_user_message(message)
+                else:
+                    Model.store[session_id].add_ai_message(message)
+                c += 1 
         return Model.store[session_id]
+
     
     
     def get_chain(self):
