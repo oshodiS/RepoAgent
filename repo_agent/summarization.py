@@ -38,6 +38,7 @@ class Summarizator:
 
         Please note:
         - Write in English
+        
         """
         reduce_prompt = PromptTemplate.from_template(reduce_template)
         reduce_chain = LLMChain(llm=self.llm, prompt=reduce_prompt)
