@@ -30,9 +30,9 @@ class ClassificationModel(Model):
         return methods
     
     def get_classification(self,question):
-        classification = self.classify_trought_name(question)
+        classification = self.classify_trough_name(question)
         # if the user is asking about a method then the question is specific 
-        if self.classify_trought_name(question) == '\n specific':
+        if self.classify_trough_name(question) == '\n specific':
             print("name-",classification)
             return classification
         
@@ -43,7 +43,7 @@ class ClassificationModel(Model):
         return "specific"
 
     
-    def classify_trought_name(self,question):
+    def classify_trough_name(self,question):
         for method in self.methods:
             if method in question:
                 return '\n specific'

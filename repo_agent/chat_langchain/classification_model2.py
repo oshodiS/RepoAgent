@@ -30,9 +30,9 @@ class ClassificationModel(Model):
         return methods
     
     def get_classification(self,question):
-        classification = self.classify_trought_name(question)
+        classification = self.classify_trough_name(question)
         # if the user is asking about a method then the question is specific 
-        if self.classify_trought_name(question) == '\n specific':
+        if self.classify_trough_name(question) == '\n specific':
             print("name-",classification)
             return classification, question
         
@@ -43,7 +43,7 @@ class ClassificationModel(Model):
         return response, refactored_question
 
     
-    def classify_trought_name(self,question):
+    def classify_trough_name(self,question):
         for method in self.methods:
             if method in question:
                 return '\n specific'
@@ -58,13 +58,6 @@ class ClassificationModel(Model):
         ]
         )
     
-    def __add_to_history(self, session_id: str, user_input, system_output, max_history_length=3):
-        history = Model.store[session_id]
-    
-        if len(history) >= 2*max_history_length:
-            self.history.pop(0)
-        self.history.append({"role": "user", "content": user_input})
-        self.history.append({"role": "system", "content": system_output})
 
     def __generate_standalone_question(self, user_input):
         chain = LLMChain(llm=self.llm, prompt=self.contextualize_q_prompt)
